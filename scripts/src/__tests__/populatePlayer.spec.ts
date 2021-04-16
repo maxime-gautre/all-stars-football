@@ -260,7 +260,7 @@ describe('Populate player', () => {
       const teamsIds = await deps.teamStore.getTeamsIds()
       const job = await deps.jobStore.findLastJob()
       expect(job).toBeDefined()
-      expect(teamsIds).toEqual(englishTeams.response.map(_ => _.team.id))
+      expect(teamsIds).toEqual(englishTeams.response.map((_) => _.team.id))
     })
   })
 })
