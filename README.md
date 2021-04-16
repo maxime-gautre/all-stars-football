@@ -1,3 +1,3 @@
 ## All stars football
 
-Work in progress.
+Work in progress
