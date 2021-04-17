@@ -1,9 +1,10 @@
 import { Bson, Collection, MongoClient } from "../../deps.ts";
 import { getEnvVariable } from "./envVariable.ts";
 
+export type ObjectId = Bson.ObjectId;
 type ExtractId<T> = T extends { id: infer U } // user has defined a type for _id
   ? U
-  : Bson.ObjectId; // user has not defined _id on schema
+  : ObjectId; // user has not defined _id on schema
 
 type HasId<T> = T & { id: ExtractId<T> };
 

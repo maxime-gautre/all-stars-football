@@ -1,8 +1,8 @@
-import { executeQuery } from "../utils/mongoUtils.ts";
+import { executeQuery, ObjectId } from "../utils/mongoUtils.ts";
 import { Bson, Collection } from "../../deps.ts";
 import { Job } from "./types.ts";
 
-type JobCollection = Omit<Job, "id"> & { _id: Bson.ObjectId };
+type JobCollection = Omit<Job, "id"> & { _id: ObjectId };
 
 export function initJob(): Promise<Job> {
   return executeQuery(
@@ -12,8 +12,8 @@ export function initJob(): Promise<Job> {
         startDate: new Date(),
       };
       // The return type of the insertOne method is broken it should Bson.ObjectId
-      const doc: Bson.ObjectId =
-        (await jobsCollection.insertOne(newJob) as unknown) as Bson.ObjectId;
+      const doc =
+        (await jobsCollection.insertOne(newJob) as unknown) as ObjectId;
       return {
         id: doc.toHexString(),
         ...newJob,
