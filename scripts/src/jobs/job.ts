@@ -1,66 +1,70 @@
-import { executeQuery } from '../utils/mongoUtils'
-import { Collection, ObjectId, WithId } from 'mongodb'
-import { Job } from './types'
+import { executeQuery } from "../utils/mongoUtils.ts";
+import { Bson, Collection } from "../../deps.ts";
+import { Job } from "./types.ts";
 
-export async function initJob(): Promise<Job> {
+type JobCollection = Omit<Job, "id"> & { _id: Bson.ObjectId };
+
+export function initJob(): Promise<Job> {
   return executeQuery(
-    'jobs',
-    async (jobsCollection: Collection<Omit<Job, 'id'>>) => {
+    "jobs",
+    async (jobsCollection: Collection<JobCollection>) => {
       const newJob = {
         startDate: new Date(),
-      }
-      const doc = await jobsCollection.insertOne(newJob)
+      };
+      // The return type of the insertOne method is broken it should Bson.ObjectId
+      const doc: Bson.ObjectId =
+        (await jobsCollection.insertOne(newJob) as unknown) as Bson.ObjectId;
       return {
-        id: doc.insertedId.toHexString(),
+        id: doc.toHexString(),
         ...newJob,
-      }
-    }
-  )
+      };
+    },
+  );
 }
 
-export async function completeJob(jobId: string): Promise<string> {
-  return executeQuery('jobs', (jobsCollection: Collection<Omit<Job, 'id'>>) => {
+export function completeJob(jobId: string): Promise<string> {
+  return executeQuery("jobs", (jobsCollection: Collection<JobCollection>) => {
     return jobsCollection
       .updateOne(
         {
-          _id: ObjectId.createFromHexString(jobId),
+          _id: Bson.ObjectId.createFromHexString(jobId),
         },
         {
           $set: {
             teamId: undefined,
             endDate: new Date(),
           },
-        }
+        },
       )
-      .then(() => jobId)
-  })
+      .then(() => jobId);
+  });
 }
 
-export async function updateJobIdWithCurrentTeam(
+export function updateJobIdWithCurrentTeam(
   jobId: string,
-  teamId: number
+  teamId: number,
 ): Promise<string> {
-  return executeQuery('jobs', (jobsCollection) => {
+  return executeQuery("jobs", (jobsCollection: Collection<JobCollection>) => {
     return jobsCollection
       .updateOne(
         {
-          _id: ObjectId.createFromHexString(jobId),
+          _id: Bson.ObjectId.createFromHexString(jobId),
         },
         {
           $set: {
             teamId,
             endDate: new Date(),
           },
-        }
+        },
       )
-      .then(() => jobId)
-  })
+      .then(() => jobId);
+  });
 }
 
 export async function findLastJob(): Promise<Job | undefined> {
   const doc = await executeQuery(
-    'jobs',
-    (jobsCollection: Collection<WithId<Omit<Job, 'id'>>>) => {
+    "jobs",
+    (jobsCollection: Collection<JobCollection>) => {
       return jobsCollection.findOne(
         {
           endDate: {
@@ -71,15 +75,15 @@ export async function findLastJob(): Promise<Job | undefined> {
           sort: {
             endDate: -1,
           },
-        }
-      )
-    }
-  )
+        },
+      );
+    },
+  );
   if (doc) {
-    const { _id, ...rest } = doc
+    const { _id, ...rest } = doc;
     return {
       ...rest,
       id: _id.toHexString(),
-    }
+    };
   }
 }

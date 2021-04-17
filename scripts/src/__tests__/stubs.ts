@@ -1,85 +1,85 @@
-import * as faker from 'faker'
-import { Job } from '../jobs/types'
-import { FootballApiTeam } from '../teams/types'
-import { FootballApiPlayer } from '../players/types'
-import { FootballApiResponse } from '../utils/apifootball/types'
+import { faker } from "../../dev_deps.ts";
+import { Job } from "../jobs/types.ts";
+import { FootballApiTeam } from "../teams/types.ts";
+import { FootballApiPlayer } from "../players/types.ts";
+import { FootballApiResponse } from "../utils/apifootball/types.ts";
 
 export class InMemoryJobStore {
-  private readonly jobStore = new Map<string, Job>()
+  private readonly jobStore = new Map<string, Job>();
   constructor(initialJobs: Job[] = []) {
     initialJobs.forEach((job) => {
-      this.jobStore.set(job.id, job)
-    })
+      this.jobStore.set(job.id, job);
+    });
   }
 
   initJob(): Promise<Job> {
     const job = {
-      id: faker.datatype.uuid(),
+      id: faker.random.uuid(),
       startDate: new Date(),
-    }
-    this.jobStore.set(job.id, job)
-    return Promise.resolve(job)
+    };
+    this.jobStore.set(job.id, job);
+    return Promise.resolve(job);
   }
 
   findLastJob(): Promise<Job | undefined> {
     const sortedJobs = Array.from(this.jobStore.values()).sort((a, b) => {
-      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime()
-    })
-    return Promise.resolve(sortedJobs[0] ?? undefined)
+      return new Date(b.startDate).getTime() - new Date(a.startDate).getTime();
+    });
+    return Promise.resolve(sortedJobs[0] ?? undefined);
   }
 
   updateJobIdWithCurrentTeam(jobId: string, teamId: number): Promise<string> {
-    const maybeJob = this.jobStore.get(jobId)
+    const maybeJob = this.jobStore.get(jobId);
     if (maybeJob) {
       this.jobStore.set(jobId, {
         ...maybeJob,
         teamId: teamId,
-      })
+      });
     }
-    return Promise.resolve(jobId)
+    return Promise.resolve(jobId);
   }
   completeJob(jobId: string): Promise<string> {
-    const maybeJob = this.jobStore.get(jobId)
+    const maybeJob = this.jobStore.get(jobId);
     if (maybeJob) {
       this.jobStore.set(jobId, {
         ...maybeJob,
         endDate: new Date(),
-      })
+      });
     }
-    return Promise.resolve(jobId)
+    return Promise.resolve(jobId);
   }
 }
 
 export class InMemoryTeamsStore {
-  private readonly teamsStore = new Map<number, FootballApiTeam>()
+  private readonly teamsStore = new Map<number, FootballApiTeam>();
   constructor(private readonly initTeams: FootballApiTeam[] = []) {
-    void this.saveTeams(initTeams)
+    void this.saveTeams(initTeams);
   }
 
   saveTeams(teams: FootballApiTeam[]): Promise<void> {
     teams.forEach((el) => {
-      this.teamsStore.set(el.team.id, el)
-    })
-    return Promise.resolve()
+      this.teamsStore.set(el.team.id, el);
+    });
+    return Promise.resolve();
   }
 
   getTeamsIds(): Promise<number[]> {
-    return Promise.resolve(Array.from(this.teamsStore.keys()))
+    return Promise.resolve(Array.from(this.teamsStore.keys()));
   }
 }
 
 export class InMemoryPlayerStore {
-  private readonly playerStore = new Map<number, FootballApiPlayer>()
+  private readonly playerStore = new Map<number, FootballApiPlayer>();
 
   savePlayers(players: FootballApiPlayer[]): Promise<void> {
     players.forEach((el) => {
-      this.playerStore.set(el.player.id, el)
-    })
-    return Promise.resolve()
+      this.playerStore.set(el.player.id, el);
+    });
+    return Promise.resolve();
   }
 
   listPlayers(): FootballApiPlayer[] {
-    return Array.from(this.playerStore.values())
+    return Array.from(this.playerStore.values());
   }
 }
 
@@ -94,81 +94,81 @@ export const englishTeams = {
     {
       team: {
         id: 33,
-        name: 'Manchester United',
-        country: 'England',
+        name: "Manchester United",
+        country: "England",
         founded: 1878,
         national: false,
-        logo: 'https://media.api-sports.io/football/teams/33.png',
+        logo: "https://media.api-sports.io/football/teams/33.png",
       },
       venue: {
         id: 556,
-        name: 'Old Trafford',
-        address: 'Sir Matt Busby Way',
-        city: 'Manchester',
+        name: "Old Trafford",
+        address: "Sir Matt Busby Way",
+        city: "Manchester",
         capacity: 76212,
-        surface: 'grass',
-        image: 'https://media.api-sports.io/football/venues/556.png',
+        surface: "grass",
+        image: "https://media.api-sports.io/football/venues/556.png",
       },
     },
     {
       team: {
         id: 40,
-        name: 'Liverpool',
-        country: 'England',
+        name: "Liverpool",
+        country: "England",
         founded: 1892,
         national: false,
-        logo: 'https://media.api-sports.io/football/teams/40.png',
+        logo: "https://media.api-sports.io/football/teams/40.png",
       },
       venue: {
         id: 550,
-        name: 'Anfield',
-        address: 'Anfield Road',
-        city: 'Liverpool',
+        name: "Anfield",
+        address: "Anfield Road",
+        city: "Liverpool",
         capacity: 55212,
-        surface: 'grass',
-        image: 'https://media.api-sports.io/football/venues/550.png',
+        surface: "grass",
+        image: "https://media.api-sports.io/football/venues/550.png",
       },
     },
     {
       team: {
         id: 49,
-        name: 'Chelsea',
-        country: 'England',
+        name: "Chelsea",
+        country: "England",
         founded: 1905,
         national: false,
-        logo: 'https://media.api-sports.io/football/teams/49.png',
+        logo: "https://media.api-sports.io/football/teams/49.png",
       },
       venue: {
         id: 519,
-        name: 'Stamford Bridge',
-        address: 'Fulham Road',
-        city: 'London',
+        name: "Stamford Bridge",
+        address: "Fulham Road",
+        city: "London",
         capacity: 41841,
-        surface: 'grass',
-        image: 'https://media.api-sports.io/football/venues/519.png',
+        surface: "grass",
+        image: "https://media.api-sports.io/football/venues/519.png",
       },
     },
     {
       team: {
         id: 50,
-        name: 'Manchester City',
-        country: 'England',
+        name: "Manchester City",
+        country: "England",
         founded: 1880,
         national: false,
-        logo: 'https://media.api-sports.io/football/teams/50.png',
+        logo: "https://media.api-sports.io/football/teams/50.png",
       },
       venue: {
         id: 555,
-        name: 'Etihad Stadium',
-        address: 'Rowsley Street',
-        city: 'Manchester',
+        name: "Etihad Stadium",
+        address: "Rowsley Street",
+        city: "Manchester",
         capacity: 55097,
-        surface: 'grass',
-        image: 'https://media.api-sports.io/football/venues/555.png',
+        surface: "grass",
+        image: "https://media.api-sports.io/football/venues/555.png",
       },
     },
   ],
-}
+};
 
 export const cityPlayers = {
   errors: [],
@@ -181,34 +181,34 @@ export const cityPlayers = {
     {
       player: {
         id: 629,
-        name: 'K. De Bruyne',
-        firstname: 'Kevin',
-        lastname: 'De Bruyne',
+        name: "K. De Bruyne",
+        firstname: "Kevin",
+        lastname: "De Bruyne",
         age: 30,
         birth: {
-          date: '1991-06-28',
-          place: 'Drongen',
-          country: 'Belgium',
+          date: "1991-06-28",
+          place: "Drongen",
+          country: "Belgium",
         },
-        nationality: 'Belgium',
-        height: '181 cm',
-        weight: '68 kg',
+        nationality: "Belgium",
+        height: "181 cm",
+        weight: "68 kg",
         injured: false,
-        photo: 'https://media.api-sports.io/football/players/629.png',
+        photo: "https://media.api-sports.io/football/players/629.png",
       },
       statistics: [
         {
           team: {
             id: 50,
-            name: 'Manchester City',
-            logo: 'https://media.api-sports.io/football/teams/50.png',
+            name: "Manchester City",
+            logo: "https://media.api-sports.io/football/teams/50.png",
           },
           league: {
             id: 39,
-            name: 'Premier League',
-            country: 'England',
-            logo: 'https://media.api-sports.io/football/leagues/39.png',
-            flag: 'https://media.api-sports.io/flags/gb.svg',
+            name: "Premier League",
+            country: "England",
+            logo: "https://media.api-sports.io/football/leagues/39.png",
+            flag: "https://media.api-sports.io/flags/gb.svg",
             season: 2020,
           },
           games: {
@@ -216,8 +216,8 @@ export const cityPlayers = {
             lineups: 22,
             minutes: 1911,
             number: null,
-            position: 'Midfielder',
-            rating: '7.725000',
+            position: "Midfielder",
+            rating: "7.725000",
             captain: false,
           },
           substitutes: {
@@ -274,14 +274,14 @@ export const cityPlayers = {
         {
           team: {
             id: 50,
-            name: 'Manchester City',
-            logo: 'https://media.api-sports.io/football/teams/50.png',
+            name: "Manchester City",
+            logo: "https://media.api-sports.io/football/teams/50.png",
           },
           league: {
             id: 2,
-            name: 'UEFA Champions League',
-            country: 'World',
-            logo: 'https://media.api-sports.io/football/leagues/2.png',
+            name: "UEFA Champions League",
+            country: "World",
+            logo: "https://media.api-sports.io/football/leagues/2.png",
             flag: null,
             season: 2020,
           },
@@ -290,8 +290,8 @@ export const cityPlayers = {
             lineups: 4,
             minutes: 347,
             number: null,
-            position: 'Midfielder',
-            rating: '8.250000',
+            position: "Midfielder",
+            rating: "8.250000",
             captain: false,
           },
           substitutes: {
@@ -350,34 +350,34 @@ export const cityPlayers = {
     {
       player: {
         id: 633,
-        name: 'İ. Gündoğan',
-        firstname: 'İlkay',
-        lastname: 'Gündoğan',
+        name: "İ. Gündoğan",
+        firstname: "İlkay",
+        lastname: "Gündoğan",
         age: 31,
         birth: {
-          date: '1990-10-24',
-          place: 'Gelsenkirchen',
-          country: 'Germany',
+          date: "1990-10-24",
+          place: "Gelsenkirchen",
+          country: "Germany",
         },
-        nationality: 'Germany',
-        height: '180 cm',
-        weight: '80 kg',
+        nationality: "Germany",
+        height: "180 cm",
+        weight: "80 kg",
         injured: false,
-        photo: 'https://media.api-sports.io/football/players/633.png',
+        photo: "https://media.api-sports.io/football/players/633.png",
       },
       statistics: [
         {
           team: {
             id: 50,
-            name: 'Manchester City',
-            logo: 'https://media.api-sports.io/football/teams/50.png',
+            name: "Manchester City",
+            logo: "https://media.api-sports.io/football/teams/50.png",
           },
           league: {
             id: 39,
-            name: 'Premier League',
-            country: 'England',
-            logo: 'https://media.api-sports.io/football/leagues/39.png',
-            flag: 'https://media.api-sports.io/flags/gb.svg',
+            name: "Premier League",
+            country: "England",
+            logo: "https://media.api-sports.io/football/leagues/39.png",
+            flag: "https://media.api-sports.io/flags/gb.svg",
             season: 2020,
           },
           games: {
@@ -385,8 +385,8 @@ export const cityPlayers = {
             lineups: 20,
             minutes: 1776,
             number: null,
-            position: 'Midfielder',
-            rating: '7.337500',
+            position: "Midfielder",
+            rating: "7.337500",
             captain: false,
           },
           substitutes: {
@@ -443,14 +443,14 @@ export const cityPlayers = {
         {
           team: {
             id: 50,
-            name: 'Manchester City',
-            logo: 'https://media.api-sports.io/football/teams/50.png',
+            name: "Manchester City",
+            logo: "https://media.api-sports.io/football/teams/50.png",
           },
           league: {
             id: 2,
-            name: 'UEFA Champions League',
-            country: 'World',
-            logo: 'https://media.api-sports.io/football/leagues/2.png',
+            name: "UEFA Champions League",
+            country: "World",
+            logo: "https://media.api-sports.io/football/leagues/2.png",
             flag: null,
             season: 2020,
           },
@@ -459,8 +459,8 @@ export const cityPlayers = {
             lineups: 8,
             minutes: 618,
             number: null,
-            position: 'Midfielder',
-            rating: '7.250000',
+            position: "Midfielder",
+            rating: "7.250000",
             captain: false,
           },
           substitutes: {
@@ -519,34 +519,34 @@ export const cityPlayers = {
     {
       player: {
         id: 636,
-        name: 'Bernardo Silva',
-        firstname: 'Bernardo',
-        lastname: 'Mota Veiga de Carvalho e Silva',
+        name: "Bernardo Silva",
+        firstname: "Bernardo",
+        lastname: "Mota Veiga de Carvalho e Silva",
         age: 27,
         birth: {
-          date: '1994-08-10',
-          place: 'Lisboa',
-          country: 'Portugal',
+          date: "1994-08-10",
+          place: "Lisboa",
+          country: "Portugal",
         },
-        nationality: 'Portugal',
-        height: '173 cm',
-        weight: '64 kg',
+        nationality: "Portugal",
+        height: "173 cm",
+        weight: "64 kg",
         injured: false,
-        photo: 'https://media.api-sports.io/football/players/636.png',
+        photo: "https://media.api-sports.io/football/players/636.png",
       },
       statistics: [
         {
           team: {
             id: 50,
-            name: 'Manchester City',
-            logo: 'https://media.api-sports.io/football/teams/50.png',
+            name: "Manchester City",
+            logo: "https://media.api-sports.io/football/teams/50.png",
           },
           league: {
             id: 39,
-            name: 'Premier League',
-            country: 'England',
-            logo: 'https://media.api-sports.io/football/leagues/39.png',
-            flag: 'https://media.api-sports.io/flags/gb.svg',
+            name: "Premier League",
+            country: "England",
+            logo: "https://media.api-sports.io/football/leagues/39.png",
+            flag: "https://media.api-sports.io/flags/gb.svg",
             season: 2020,
           },
           games: {
@@ -554,8 +554,8 @@ export const cityPlayers = {
             lineups: 21,
             minutes: 1814,
             number: null,
-            position: 'Midfielder',
-            rating: '6.978260',
+            position: "Midfielder",
+            rating: "6.978260",
             captain: false,
           },
           substitutes: {
@@ -612,14 +612,14 @@ export const cityPlayers = {
         {
           team: {
             id: 50,
-            name: 'Manchester City',
-            logo: 'https://media.api-sports.io/football/teams/50.png',
+            name: "Manchester City",
+            logo: "https://media.api-sports.io/football/teams/50.png",
           },
           league: {
             id: 2,
-            name: 'UEFA Champions League',
-            country: 'World',
-            logo: 'https://media.api-sports.io/football/leagues/2.png',
+            name: "UEFA Champions League",
+            country: "World",
+            logo: "https://media.api-sports.io/football/leagues/2.png",
             flag: null,
             season: 2020,
           },
@@ -628,8 +628,8 @@ export const cityPlayers = {
             lineups: 7,
             minutes: 604,
             number: null,
-            position: 'Midfielder',
-            rating: '6.900000',
+            position: "Midfielder",
+            rating: "6.900000",
             captain: false,
           },
           substitutes: {
@@ -688,34 +688,34 @@ export const cityPlayers = {
     {
       player: {
         id: 855,
-        name: 'João Cancelo',
-        firstname: 'João Pedro',
-        lastname: 'Cavaco Cancelo',
+        name: "João Cancelo",
+        firstname: "João Pedro",
+        lastname: "Cavaco Cancelo",
         age: 27,
         birth: {
-          date: '1994-05-27',
-          place: 'Barreiro',
-          country: 'Portugal',
+          date: "1994-05-27",
+          place: "Barreiro",
+          country: "Portugal",
         },
-        nationality: 'Portugal',
-        height: '182 cm',
-        weight: '74 kg',
+        nationality: "Portugal",
+        height: "182 cm",
+        weight: "74 kg",
         injured: false,
-        photo: 'https://media.api-sports.io/football/players/855.png',
+        photo: "https://media.api-sports.io/football/players/855.png",
       },
       statistics: [
         {
           team: {
             id: 50,
-            name: 'Manchester City',
-            logo: 'https://media.api-sports.io/football/teams/50.png',
+            name: "Manchester City",
+            logo: "https://media.api-sports.io/football/teams/50.png",
           },
           league: {
             id: 39,
-            name: 'Premier League',
-            country: 'England',
-            logo: 'https://media.api-sports.io/football/leagues/39.png',
-            flag: 'https://media.api-sports.io/flags/gb.svg',
+            name: "Premier League",
+            country: "England",
+            logo: "https://media.api-sports.io/football/leagues/39.png",
+            flag: "https://media.api-sports.io/flags/gb.svg",
             season: 2020,
           },
           games: {
@@ -723,8 +723,8 @@ export const cityPlayers = {
             lineups: 23,
             minutes: 2038,
             number: null,
-            position: 'Defender',
-            rating: '7.283333',
+            position: "Defender",
+            rating: "7.283333",
             captain: false,
           },
           substitutes: {
@@ -781,14 +781,14 @@ export const cityPlayers = {
         {
           team: {
             id: 50,
-            name: 'Manchester City',
-            logo: 'https://media.api-sports.io/football/teams/50.png',
+            name: "Manchester City",
+            logo: "https://media.api-sports.io/football/teams/50.png",
           },
           league: {
             id: 2,
-            name: 'UEFA Champions League',
-            country: 'World',
-            logo: 'https://media.api-sports.io/football/leagues/2.png',
+            name: "UEFA Champions League",
+            country: "World",
+            logo: "https://media.api-sports.io/football/leagues/2.png",
             flag: null,
             season: 2020,
           },
@@ -797,8 +797,8 @@ export const cityPlayers = {
             lineups: 6,
             minutes: 544,
             number: null,
-            position: 'Defender',
-            rating: '7.225000',
+            position: "Defender",
+            rating: "7.225000",
             captain: false,
           },
           substitutes: {
@@ -855,7 +855,7 @@ export const cityPlayers = {
       ],
     },
   ],
-}
+};
 
 export const manUtdPlayers = {
   errors: [],
@@ -868,34 +868,34 @@ export const manUtdPlayers = {
     {
       player: {
         id: 904,
-        name: 'P. Pogba',
-        firstname: 'Paul',
-        lastname: 'Pogba',
+        name: "P. Pogba",
+        firstname: "Paul",
+        lastname: "Pogba",
         age: 28,
         birth: {
-          date: '1993-03-15',
-          place: 'Lagny-sur-Marne',
-          country: 'France',
+          date: "1993-03-15",
+          place: "Lagny-sur-Marne",
+          country: "France",
         },
-        nationality: 'France',
-        height: '191 cm',
-        weight: '84 kg',
+        nationality: "France",
+        height: "191 cm",
+        weight: "84 kg",
         injured: false,
-        photo: 'https://media.api-sports.io/football/players/904.png',
+        photo: "https://media.api-sports.io/football/players/904.png",
       },
       statistics: [
         {
           team: {
             id: 33,
-            name: 'Manchester United',
-            logo: 'https://media.api-sports.io/football/teams/33.png',
+            name: "Manchester United",
+            logo: "https://media.api-sports.io/football/teams/33.png",
           },
           league: {
             id: 39,
-            name: 'Premier League',
-            country: 'England',
-            logo: 'https://media.api-sports.io/football/leagues/39.png',
-            flag: 'https://media.api-sports.io/flags/gb.svg',
+            name: "Premier League",
+            country: "England",
+            logo: "https://media.api-sports.io/football/leagues/39.png",
+            flag: "https://media.api-sports.io/flags/gb.svg",
             season: 2020,
           },
           games: {
@@ -903,8 +903,8 @@ export const manUtdPlayers = {
             lineups: 17,
             minutes: 1522,
             number: null,
-            position: 'Midfielder',
-            rating: '7.000000',
+            position: "Midfielder",
+            rating: "7.000000",
             captain: false,
           },
           substitutes: {
@@ -961,14 +961,14 @@ export const manUtdPlayers = {
         {
           team: {
             id: 33,
-            name: 'Manchester United',
-            logo: 'https://media.api-sports.io/football/teams/33.png',
+            name: "Manchester United",
+            logo: "https://media.api-sports.io/football/teams/33.png",
           },
           league: {
             id: 2,
-            name: 'UEFA Champions League',
-            country: 'World',
-            logo: 'https://media.api-sports.io/football/leagues/2.png',
+            name: "UEFA Champions League",
+            country: "World",
+            logo: "https://media.api-sports.io/football/leagues/2.png",
             flag: null,
             season: 2020,
           },
@@ -977,8 +977,8 @@ export const manUtdPlayers = {
             lineups: 1,
             minutes: 178,
             number: null,
-            position: 'Midfielder',
-            rating: '6.840000',
+            position: "Midfielder",
+            rating: "6.840000",
             captain: false,
           },
           substitutes: {
@@ -1035,14 +1035,14 @@ export const manUtdPlayers = {
         {
           team: {
             id: 33,
-            name: 'Manchester United',
-            logo: 'https://media.api-sports.io/football/teams/33.png',
+            name: "Manchester United",
+            logo: "https://media.api-sports.io/football/teams/33.png",
           },
           league: {
             id: 3,
-            name: 'UEFA Europa League',
-            country: 'World',
-            logo: 'https://media.api-sports.io/football/leagues/3.png',
+            name: "UEFA Europa League",
+            country: "World",
+            logo: "https://media.api-sports.io/football/leagues/3.png",
             flag: null,
             season: 2020,
           },
@@ -1051,8 +1051,8 @@ export const manUtdPlayers = {
             lineups: 1,
             minutes: 118,
             number: null,
-            position: 'Midfielder',
-            rating: '7.500000',
+            position: "Midfielder",
+            rating: "7.500000",
             captain: false,
           },
           substitutes: {
@@ -1111,34 +1111,34 @@ export const manUtdPlayers = {
     {
       player: {
         id: 909,
-        name: 'M. Rashford',
-        firstname: 'Marcus',
-        lastname: 'Rashford',
+        name: "M. Rashford",
+        firstname: "Marcus",
+        lastname: "Rashford",
         age: 24,
         birth: {
-          date: '1997-10-31',
-          place: 'Manchester',
-          country: 'England',
+          date: "1997-10-31",
+          place: "Manchester",
+          country: "England",
         },
-        nationality: 'England',
-        height: '180 cm',
-        weight: '70 kg',
+        nationality: "England",
+        height: "180 cm",
+        weight: "70 kg",
         injured: false,
-        photo: 'https://media.api-sports.io/football/players/909.png',
+        photo: "https://media.api-sports.io/football/players/909.png",
       },
       statistics: [
         {
           team: {
             id: 33,
-            name: 'Manchester United',
-            logo: 'https://media.api-sports.io/football/teams/33.png',
+            name: "Manchester United",
+            logo: "https://media.api-sports.io/football/teams/33.png",
           },
           league: {
             id: 39,
-            name: 'Premier League',
-            country: 'England',
-            logo: 'https://media.api-sports.io/football/leagues/39.png',
-            flag: 'https://media.api-sports.io/flags/gb.svg',
+            name: "Premier League",
+            country: "England",
+            logo: "https://media.api-sports.io/football/leagues/39.png",
+            flag: "https://media.api-sports.io/flags/gb.svg",
             season: 2020,
           },
           games: {
@@ -1146,8 +1146,8 @@ export const manUtdPlayers = {
             lineups: 29,
             minutes: 2525,
             number: null,
-            position: 'Attacker',
-            rating: '6.912903',
+            position: "Attacker",
+            rating: "6.912903",
             captain: false,
           },
           substitutes: {
@@ -1204,14 +1204,14 @@ export const manUtdPlayers = {
         {
           team: {
             id: 33,
-            name: 'Manchester United',
-            logo: 'https://media.api-sports.io/football/teams/33.png',
+            name: "Manchester United",
+            logo: "https://media.api-sports.io/football/teams/33.png",
           },
           league: {
             id: 2,
-            name: 'UEFA Champions League',
-            country: 'World',
-            logo: 'https://media.api-sports.io/football/leagues/2.png',
+            name: "UEFA Champions League",
+            country: "World",
+            logo: "https://media.api-sports.io/football/leagues/2.png",
             flag: null,
             season: 2020,
           },
@@ -1220,8 +1220,8 @@ export const manUtdPlayers = {
             lineups: 5,
             minutes: 416,
             number: null,
-            position: 'Attacker',
-            rating: '7.450000',
+            position: "Attacker",
+            rating: "7.450000",
             captain: false,
           },
           substitutes: {
@@ -1278,14 +1278,14 @@ export const manUtdPlayers = {
         {
           team: {
             id: 33,
-            name: 'Manchester United',
-            logo: 'https://media.api-sports.io/football/teams/33.png',
+            name: "Manchester United",
+            logo: "https://media.api-sports.io/football/teams/33.png",
           },
           league: {
             id: 3,
-            name: 'UEFA Europa League',
-            country: 'World',
-            logo: 'https://media.api-sports.io/football/leagues/3.png',
+            name: "UEFA Europa League",
+            country: "World",
+            logo: "https://media.api-sports.io/football/leagues/3.png",
             flag: null,
             season: 2020,
           },
@@ -1294,8 +1294,8 @@ export const manUtdPlayers = {
             lineups: 3,
             minutes: 224,
             number: null,
-            position: 'Attacker',
-            rating: '7.050000',
+            position: "Attacker",
+            rating: "7.050000",
             captain: false,
           },
           substitutes: {
@@ -1354,34 +1354,34 @@ export const manUtdPlayers = {
     {
       player: {
         id: 1485,
-        name: 'Bruno Fernandes',
-        firstname: 'Bruno Miguel',
-        lastname: 'Borges Fernandes',
+        name: "Bruno Fernandes",
+        firstname: "Bruno Miguel",
+        lastname: "Borges Fernandes",
         age: 27,
         birth: {
-          date: '1994-09-08',
-          place: 'Maia',
-          country: 'Portugal',
+          date: "1994-09-08",
+          place: "Maia",
+          country: "Portugal",
         },
-        nationality: 'Portugal',
-        height: '179 cm',
-        weight: '80 kg',
+        nationality: "Portugal",
+        height: "179 cm",
+        weight: "80 kg",
         injured: false,
-        photo: 'https://media.api-sports.io/football/players/1485.png',
+        photo: "https://media.api-sports.io/football/players/1485.png",
       },
       statistics: [
         {
           team: {
             id: 33,
-            name: 'Manchester United',
-            logo: 'https://media.api-sports.io/football/teams/33.png',
+            name: "Manchester United",
+            logo: "https://media.api-sports.io/football/teams/33.png",
           },
           league: {
             id: 39,
-            name: 'Premier League',
-            country: 'England',
-            logo: 'https://media.api-sports.io/football/leagues/39.png',
-            flag: 'https://media.api-sports.io/flags/gb.svg',
+            name: "Premier League",
+            country: "England",
+            logo: "https://media.api-sports.io/football/leagues/39.png",
+            flag: "https://media.api-sports.io/flags/gb.svg",
             season: 2020,
           },
           games: {
@@ -1389,8 +1389,8 @@ export const manUtdPlayers = {
             lineups: 30,
             minutes: 2651,
             number: null,
-            position: 'Midfielder',
-            rating: '7.632258',
+            position: "Midfielder",
+            rating: "7.632258",
             captain: false,
           },
           substitutes: {
@@ -1447,14 +1447,14 @@ export const manUtdPlayers = {
         {
           team: {
             id: 33,
-            name: 'Manchester United',
-            logo: 'https://media.api-sports.io/football/teams/33.png',
+            name: "Manchester United",
+            logo: "https://media.api-sports.io/football/teams/33.png",
           },
           league: {
             id: 2,
-            name: 'UEFA Champions League',
-            country: 'World',
-            logo: 'https://media.api-sports.io/football/leagues/2.png',
+            name: "UEFA Champions League",
+            country: "World",
+            logo: "https://media.api-sports.io/football/leagues/2.png",
             flag: null,
             season: 2020,
           },
@@ -1463,8 +1463,8 @@ export const manUtdPlayers = {
             lineups: 5,
             minutes: 439,
             number: null,
-            position: 'Midfielder',
-            rating: '7.883333',
+            position: "Midfielder",
+            rating: "7.883333",
             captain: false,
           },
           substitutes: {
@@ -1521,14 +1521,14 @@ export const manUtdPlayers = {
         {
           team: {
             id: 33,
-            name: 'Manchester United',
-            logo: 'https://media.api-sports.io/football/teams/33.png',
+            name: "Manchester United",
+            logo: "https://media.api-sports.io/football/teams/33.png",
           },
           league: {
             id: 3,
-            name: 'UEFA Europa League',
-            country: 'World',
-            logo: 'https://media.api-sports.io/football/leagues/3.png',
+            name: "UEFA Europa League",
+            country: "World",
+            logo: "https://media.api-sports.io/football/leagues/3.png",
             flag: null,
             season: 2020,
           },
@@ -1537,8 +1537,8 @@ export const manUtdPlayers = {
             lineups: 5,
             minutes: 383,
             number: null,
-            position: 'Midfielder',
-            rating: '7.620000',
+            position: "Midfielder",
+            rating: "7.620000",
             captain: false,
           },
           substitutes: {
@@ -1595,15 +1595,15 @@ export const manUtdPlayers = {
       ],
     },
   ],
-}
+};
 
 export const fakeFetchPlayers = (
-  teamId: number
+  teamId: number,
 ): Promise<FootballApiResponse<FootballApiPlayer>> => {
-  const cityTeamId = 50
-  const manUtdTeamId = 33
-  if (teamId === cityTeamId) return Promise.resolve(cityPlayers)
-  if (teamId === manUtdTeamId) return Promise.resolve(manUtdPlayers)
+  const cityTeamId = 50;
+  const manUtdTeamId = 33;
+  if (teamId === cityTeamId) return Promise.resolve(cityPlayers);
+  if (teamId === manUtdTeamId) return Promise.resolve(manUtdPlayers);
   return Promise.resolve({
     errors: [],
     results: 0,
@@ -1612,5 +1612,5 @@ export const fakeFetchPlayers = (
       total: 1,
     },
     response: [],
-  })
-}
+  });
+};

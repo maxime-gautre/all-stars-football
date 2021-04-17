@@ -1,38 +1,38 @@
-import { executeQuery, bulkUpsert } from '../utils/mongoUtils'
-import { Collection } from 'mongodb'
-import { Team, Venue, FootballApiTeam } from './types'
-import { FootballApiResponse } from '../utils/apifootball/types'
-import { fetchData } from '../utils/apifootball/apiFootball'
+import { Collection } from "../../deps.ts";
+import { bulkUpsert, executeQuery } from "../utils/mongoUtils.ts";
+import { FootballApiTeam, Team, Venue } from "./types.ts";
+import { FootballApiResponse } from "../utils/apifootball/types.ts";
+import { fetchData } from "../utils/apifootball/apiFootball.ts";
 
 type TeamCollectionPayload = Team & {
-  venue: Venue
-}
+  venue: Venue;
+};
 
-export async function fetchTeams(): Promise<
+export function fetchTeams(): Promise<
   FootballApiResponse<FootballApiTeam>
 > {
-  const championsLeagueId = 2
-  return fetchData<FootballApiTeam>('teams', { league: championsLeagueId })
+  const championsLeagueId = 2;
+  return fetchData<FootballApiTeam>("teams", { league: championsLeagueId });
 }
 
-export async function getTeamsIds(): Promise<number[]> {
+export function getTeamsIds(): Promise<number[]> {
   return executeQuery(
-    'teams',
+    "teams",
     async (collection: Collection<TeamCollectionPayload>) => {
       const teams = await collection
         .find({}, { projection: { id: 1, _id: 0 }, sort: { id: 1 } })
-        .toArray()
-      return teams.map((_) => _.id)
-    }
-  )
+        .toArray();
+      return teams.map((_) => _.id);
+    },
+  );
 }
 
-export async function saveTeams(teams: FootballApiTeam[]): Promise<void> {
+export function saveTeams(teams: FootballApiTeam[]): Promise<void> {
   const docs = teams.map((element) => {
     return {
       ...element.team,
       venue: element.venue,
-    }
-  })
-  return bulkUpsert('teams', docs)
+    };
+  });
+  return bulkUpsert("teams", docs);
 }
