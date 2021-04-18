@@ -1,11 +1,11 @@
-import * as dotenv from 'dotenv'
+import { config } from "https://deno.land/x/dotenv/mod.ts";
 
-dotenv.config()
+const denoEnv = config({ safe: true });
 
 export function getEnvVariable(key: string): string {
-  const envVariable = process.env[key]
+  const envVariable = denoEnv[key];
   if (!envVariable) {
-    throw new Error(`Cannot find ${key} env variable`)
+    throw new Error(`Cannot find ${key} env variable`);
   }
-  return envVariable
+  return envVariable;
 }

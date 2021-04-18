@@ -17,14 +17,15 @@ jobs:
         working-directory: ./scripts
 
     steps:
-      - uses: actions/checkout@v2
-      - name: Use Node.js
-        uses: actions/setup-node@v1
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install deno
+        uses: denoland/setup-deno@main
         with:
-          node-version: 12.x
-      - name: Install dependencies
-        run: yarn --frozen-lockfile
-      - name: Run lint
-        run: yarn lint
-      - name: Run test
-        run: yarn test --silent --verbose
+          deno-version: "1.9.0"
+      - name: Linter
+        run: make lint
+      - name: Compile
+        run: make compile
+      - name: Tests
+        run: make test

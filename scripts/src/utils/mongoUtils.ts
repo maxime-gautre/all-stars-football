@@ -1,55 +1,50 @@
-import { MongoClient, Collection, BulkWriteUpdateOneOperation } from 'mongodb'
-import { getEnvVariable } from './envVariable'
+import { Bson, Collection, MongoClient } from "../../deps.ts";
+import { getEnvVariable } from "./envVariable.ts";
 
-const config = initMongoConfig()
-
-function initMongoConfig() {
-  const mongoUser = getEnvVariable('MONGO_USERNAME')
-  const mongoPassword = getEnvVariable('MONGO_PASSWORD')
-  const mongoHost = getEnvVariable('MONGO_HOST')
-  const mongoPort = getEnvVariable('MONGO_PORT')
-  const mongoDatabase = getEnvVariable('MONGO_DATABASE')
-
-  return {
-    mongoUser,
-    mongoPassword,
-    mongoHost,
-    mongoPort,
-    mongoDatabase,
-  }
-}
-
-function mongoClient() {
-  const uri = `mongodb://${config.mongoUser}:${config.mongoPassword}@${config.mongoHost}:${config.mongoPort}/${config.mongoDatabase}?authSource=${config.mongoDatabase}`
-  return new MongoClient(uri, { useUnifiedTopology: true })
-}
-
-export async function executeQuery<T>(
-  collectionName: string,
-  query: (collection: Collection) => Promise<T>
-): Promise<T> {
-  const client = mongoClient()
-  try {
-    await client.connect()
-    const database = client.db(config.mongoDatabase)
-    const collection = database.collection(collectionName)
-    return await query(collection)
-  } finally {
-    await client.close()
-  }
-}
-
+export type ObjectId = Bson.ObjectId;
 type ExtractId<T> = T extends { id: infer U } // user has defined a type for _id
   ? U
-  : string // user has not defined _id on schema
+  : ObjectId; // user has not defined _id on schema
 
-type HasId<T> = T & { id: ExtractId<T> }
+type HasId<T> = T & { id: ExtractId<T> };
 
-export async function bulkUpsert<T>(
+const config = initMongoConfig();
+const client = new MongoClient();
+
+function initMongoConfig() {
+  const mongoUser = getEnvVariable("MONGO_USERNAME");
+  const mongoPassword = getEnvVariable("MONGO_PASSWORD");
+  const mongoHost = getEnvVariable("MONGO_HOST");
+  const mongoPort = getEnvVariable("MONGO_PORT");
+  const mongoDatabase = getEnvVariable("MONGO_DATABASE");
+  const uri =
+    `mongodb://${mongoUser}:${mongoPassword}@${mongoHost}:${mongoPort}/${mongoDatabase}?authSource=${mongoDatabase}`;
+  return {
+    uri,
+    mongoDatabase,
+  };
+}
+
+export async function executeQuery<C, T>(
   collectionName: string,
-  docs: HasId<T>[]
+  query: (collection: Collection<C>) => Promise<T>,
+): Promise<T> {
+  try {
+    await client.connect(config.uri);
+    const database = client.database(config.mongoDatabase);
+    const collection = database.collection<C>(collectionName);
+    return await query(collection);
+  } finally {
+    await client.close();
+  }
+}
+
+export function bulkUpsert<T>(
+  collectionName: string,
+  docs: HasId<T>[],
 ): Promise<void> {
-  return executeQuery(
+  // https://github.com/denodrivers/deno_mongo/issues/178
+  /*  return executeQuery(
     collectionName,
     async (collection: Collection<BulkWriteUpdateOneOperation<T>>) => {
       const bulkOperations = docs.map((element) => {
@@ -59,9 +54,21 @@ export async function bulkUpsert<T>(
             update: { $set: element },
             upsert: true,
           },
-        }
-      })
-      await collection.bulkWrite(bulkOperations)
-    }
-  )
+        };
+      });
+      await collection.bulkWrite(bulkOperations);
+    },
+  );*/
+  return executeQuery(
+    collectionName,
+    async (collection) => {
+      for (const doc of docs) {
+        await collection.updateOne(
+          { id: doc.id },
+          doc,
+          { upsert: true },
+        );
+      }
+    },
+  );
 }
