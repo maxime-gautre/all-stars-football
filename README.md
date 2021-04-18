@@ -10,16 +10,15 @@ We are limited by the number of requests per day. The script allows to start the
 
 ### Running the script
 
-In "scripts" folder, starts the mongo database:
+In "scripts" folder: 
 ```
-yarn deps:up
-```
-
-Runs the script to populate the database:
-```
-yarn execute src/main.ts
+make run
 ```
 
 ### Lint & Test
 
-To run lint and test you can respectively launch the command: yarn lint/yarn test --silent
+To run lint and test you can respectively launch the command: 
+
+```
+make lint/test
+```
