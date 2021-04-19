@@ -29,3 +29,20 @@ jobs:
         run: make compile
       - name: Tests
         run: make test
+  backend:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./backend
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+      - name: Install deno
+        uses: denoland/setup-deno@main
+        with:
+          deno-version: "1.9.0"
+      - name: Linter
+        run: make lint
+      - name: Compile
+        run: make compile
