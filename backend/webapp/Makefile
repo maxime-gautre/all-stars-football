@@ -1,3 +1,7 @@
+ifneq (,$(wildcard ./.env))
+    include .env
+    export
+endif
 
 fmt:
 	deno fmt
@@ -14,4 +18,6 @@ test:
 	deno test --allow-env
 
 run:
-	deno run --allow-net mod.ts
+	docker-compose -f ../docker-compose.deps.yml up -d
+	sleep 2
+	deno run --allow-env --allow-net --allow-read mod.ts

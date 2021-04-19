@@ -43,7 +43,6 @@ await log.setup({
   },
 
   loggers: {
-    // configure default logger available via short-hand methods above.
     default: {
       level: "INFO",
       handlers: ["console"],
