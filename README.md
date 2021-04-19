@@ -2,6 +2,22 @@
 
 Work in progress
 
+## Backend
+
+### Web server
+
+To start the web server:
+```
+make run
+```
+
+### Lint & Test
+
+To run lint and test you can respectively launch the command:
+
+```
+make lint/test
+```
 
 ## Background tasks
 
