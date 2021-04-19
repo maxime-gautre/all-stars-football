@@ -1,5 +1,6 @@
 import { Bson, Collection, MongoClient } from "../../deps.ts";
 import { getEnvVariable } from "./envVariable.ts";
+import { timer } from "./time.ts";
 
 export type ObjectId = Bson.ObjectId;
 type ExtractId<T> = T extends { id: infer U } // user has defined a type for _id
@@ -22,7 +23,23 @@ function initMongoConfig() {
   return {
     uri,
     mongoDatabase,
+    reconnect: true,
+    reconnectTries: 10,
+    reconnectInterval: 1000,
   };
+}
+
+async function connect(currentRetry: number = 0): Promise<void> {
+  try {
+    await client.connect(config.uri);
+  } catch (error) {
+    if (!config.reconnect || config.reconnectTries <= currentRetry) {
+      throw error;
+    } else {
+      await timer(config.reconnectInterval);
+      return await connect(currentRetry + 1);
+    }
+  }
 }
 
 export async function executeQuery<C, T>(
@@ -30,7 +47,7 @@ export async function executeQuery<C, T>(
   query: (collection: Collection<C>) => Promise<T>,
 ): Promise<T> {
   try {
-    await client.connect(config.uri);
+    await connect();
     const database = client.database(config.mongoDatabase);
     const collection = database.collection<C>(collectionName);
     return await query(collection);
