@@ -17,8 +17,8 @@ export async function fetchData<T>(
     },
     params: {
       ...params,
-      season
-    }
+      season,
+    },
   };
   const res = await axiod.request(config);
   const data = (res.data as unknown) as FootballApiResponse<T>;
