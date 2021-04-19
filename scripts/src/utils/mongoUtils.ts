@@ -29,7 +29,7 @@ function initMongoConfig() {
   };
 }
 
-async function connect(currentRetry: number = 0): Promise<void> {
+async function connect(currentRetry = 0): Promise<void> {
   try {
     await client.connect(config.uri);
   } catch (error) {
