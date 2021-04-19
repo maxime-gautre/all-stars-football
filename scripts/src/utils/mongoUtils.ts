@@ -37,7 +37,7 @@ async function connect(currentRetry = 0): Promise<void> {
       throw error;
     } else {
       await timer(config.reconnectInterval);
-      return await connect(currentRetry + 1);
+      return connect(currentRetry + 1);
     }
   }
 }
