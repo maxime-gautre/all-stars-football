@@ -8,17 +8,17 @@ export async function fetchData<T>(
   path: string,
   params: { [key: string]: string | number | boolean },
 ): Promise<FootballApiResponse<T>> {
-  const season = "2020";
-  const queryParameters = new URLSearchParams({
-    ...params,
-    season,
-  });
+  const season = 2020;
   const config = {
-    url: `https://v3.football.api-sports.io/${path}?${queryParameters}`,
+    url: `https://v3.football.api-sports.io/${path}`,
     method: "get" as const,
     headers: {
       "x-apisports-key": ApiSportsKey,
     },
+    params: {
+      ...params,
+      season
+    }
   };
   const res = await axiod.request(config);
   const data = (res.data as unknown) as FootballApiResponse<T>;
