@@ -4,7 +4,7 @@ Work in progress
 
 ## Backend
 
-### Web server
+### Web server
 
 To start the web server:
 ```
