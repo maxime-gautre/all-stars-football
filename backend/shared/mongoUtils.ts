@@ -1,4 +1,4 @@
-import { Bson, Collection, MongoClient } from "../../deps.ts";
+import { Bson, Collection, MongoClient } from "../deps.ts";
 import { getEnvVariable } from "./envVariable.ts";
 import { timer } from "./time.ts";
 

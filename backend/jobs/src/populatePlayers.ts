@@ -1,5 +1,5 @@
-import { log } from "../deps.ts";
-import { timer } from "./utils/time.ts";
+import { log } from "../../deps.ts";
+import { timer } from "../../shared/time.ts";
 import { Job } from "./jobs/types.ts";
 import { FootballApiTeam } from "./teams/types.ts";
 import { FootballApiPlayer } from "./players/types.ts";

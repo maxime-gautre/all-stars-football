@@ -1,4 +1,4 @@
-import { faker } from "../../dev_deps.ts";
+import { faker } from "../../../dev_deps.ts";
 import { Job } from "../jobs/types.ts";
 import { FootballApiTeam } from "../teams/types.ts";
 import { FootballApiPlayer } from "../players/types.ts";

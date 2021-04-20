@@ -1,4 +1,4 @@
-import { log } from "./deps.ts";
+import { log } from "../deps.ts";
 import { Context, populatePlayers } from "./src/populatePlayers.ts";
 import { fetchPlayers, savePlayers } from "./src/players/player.ts";
 import {
