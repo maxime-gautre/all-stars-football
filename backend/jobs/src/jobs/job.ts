@@ -1,5 +1,5 @@
-import { executeQuery, ObjectId } from "../utils/mongoUtils.ts";
-import { Bson, Collection } from "../../deps.ts";
+import { executeQuery, ObjectId } from "../../../shared/mongoUtils.ts";
+import { Bson, Collection } from "../../../deps.ts";
 import { Job } from "./types.ts";
 
 type JobCollection = Omit<Job, "id"> & { _id: ObjectId };

@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./scripts
+        working-directory: ./backend/jobs
 
     steps:
       - name: Checkout code
@@ -33,7 +33,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: ./backend
+        working-directory: ./backend/webapp
 
     steps:
       - name: Checkout code

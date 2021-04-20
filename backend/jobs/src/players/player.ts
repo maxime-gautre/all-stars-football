@@ -1,6 +1,6 @@
 import { FootballApiPlayer } from "./types.ts";
 import { FootballApiResponse } from "../utils/apifootball/types.ts";
-import { bulkUpsert } from "../utils/mongoUtils.ts";
+import { bulkUpsert } from "../../../shared/mongoUtils.ts";
 import { fetchData } from "../utils/apifootball/apiFootball.ts";
 
 export function fetchPlayers(
