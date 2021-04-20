@@ -21,4 +21,7 @@ run:
 	docker-compose -f ../docker-compose.deps.yml up -d
 	sleep 2
 	deno run --allow-env --allow-read --allow-net mod.ts
+
+clean:
+	rm -rf bin/
 	docker-compose -f ../docker-compose.deps.yml down
