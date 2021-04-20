@@ -3,5 +3,4 @@ export { Bson, MongoClient } from "https://deno.land/x/mongo@v0.22.0/mod.ts";
 export { Collection } from "https://deno.land/x/mongo@v0.22.0/src/collection/mod.ts";
 import axiod from "https://raw.githubusercontent.com/roonie007/axiod/master/mod.ts";
 export { axiod };
-export { Application, Router } from "https://deno.land/x/oak/mod.ts";
-
+export { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";

@@ -12,7 +12,9 @@ cd backend/webapp
 make run
 ```
 
-### Lint & Test
+Server is listening on port 8080.
+
+#### Lint & Test
 
 To run lint and test you can respectively launch the command:
 
@@ -21,20 +23,19 @@ cd backend/webapp
 make lint/test
 ```
 
-## Background tasks
+### Background tasks
 
 The "jobs" folder contains scripts that retrieve data from the [football API](https://www.api-football.com/) and persist it into a local database. For the moment we are retrieving some teams and the players of these teams.
 We are limited by the number of requests per day. The script allows to start the process in incremental mode and to save the state when the number of requests is reached. We can then restart the script the next day and consider the new data.
 
-### Running the script
+#### Running the script
 
-Run the script: 
 ```
 cd backend/jobs
 make run
 ```
 
-### Lint & Test
+#### Lint & Test
 
 To run lint and test you can respectively launch the command: 
 
