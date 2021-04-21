@@ -1,4 +1,4 @@
-import { Application, Context, Router } from "../deps.ts";
+import { Application, Context, Router, oakCors } from "../deps.ts";
 import { getPlayers, PlayerContext } from "./src/domain/players.ts";
 import { listPlayers } from "./src/adapters/repositoryPlayers.ts";
 import { loggerContext } from "./logger.ts";
@@ -20,8 +20,12 @@ router
   });
 
 const app = new Application();
-app.use(router.routes());
+app.use(oakCors({
+  origin: '*', // todo be more restrictive
+  optionsSuccessStatus: 200,
+}));
 app.use(router.allowedMethods());
+app.use(router.routes());
 
 loggerContext.logger.info("Server running at http://localhost:8080/");
 await app.listen({ port: 8080 });
