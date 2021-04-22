@@ -1,10 +1,18 @@
-import { Application, Context, oakCors, Router } from "../deps.ts";
-import { getPlayers, PlayerContext } from "./src/domain/players.ts";
-import { listPlayers } from "./src/adapters/repositoryPlayers.ts";
+import { Application, Context, getQuery, oakCors, Router } from "../deps.ts";
+import {
+  getPlayers,
+  PlayerContext,
+} from "./src/domain/players.ts";
+import {
+  listPlayers,
+  searchPlayers,
+} from "./src/adapters/repositoryPlayers.ts";
 import { loggerContext } from "./logger.ts";
+import get = Reflect.get;
 
 const playerContext: PlayerContext = {
   listPlayers,
+  searchPlayers,
   ...loggerContext,
 };
 
@@ -17,6 +25,13 @@ router
     const players = await getPlayers(playerContext)();
     response.status = 200;
     response.body = players;
+  })
+  .get("/search", async (ctx: Context) => {
+    const params = getQuery(ctx);
+    const searchQuery = params.search ?? undefined;
+    const players = await getPlayers(playerContext)(searchQuery);
+    ctx.response.status = 200;
+    ctx.response.body = players;
   });
 
 const app = new Application();

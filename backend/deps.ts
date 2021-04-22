@@ -5,3 +5,4 @@ import axiod from "https://deno.land/x/axiod/mod.ts";
 export { axiod };
 export { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";
 export { oakCors } from "https://deno.land/x/cors/mod.ts";
+export { getQuery } from "https://deno.land/x/oak/helpers.ts";
