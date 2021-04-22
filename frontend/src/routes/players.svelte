@@ -1,5 +1,6 @@
 <script lang="ts" context="module">
-  import { LoadOutput } from '@sveltejs/kit/types/page';
+  import type { LoadOutput } from '@sveltejs/kit/types/page';
+
   const apiURL = 'http://localhost:8080/players';
 
   export async function load(): Promise<LoadOutput> {
@@ -14,7 +15,8 @@
 
 <script lang="ts">
   import { Search } from 'carbon-components-svelte';
-  import type { PlayerInfo } from '../lib/shared/types.ts';
+  import PlayerCard from '$lib/components/PlayerCard.svelte';
+  import type { PlayerInfo } from '$lib/shared/types.ts';
 
   export let players: PlayerInfo[];
 </script>
@@ -24,11 +26,7 @@
   <div class="players">
     {#each players as player}
       <div class="player">
-        <div class="card">
-          <img src={player.photo} alt="Player" width="100px" />
-          <div>{player.name}</div>
-          <div>{player.nationality}</div>
-        </div>
+        <PlayerCard {player} />
       </div>
     {/each}
   </div>
@@ -36,7 +34,7 @@
 
 <style>
   .container {
-    width: 80vw;
+    width: 60vw;
     margin-left: auto;
     margin-right: auto;
     background-color: #fff;
@@ -54,9 +52,5 @@
     justify-content: center;
     align-items: center;
     text-align: center;
-  }
-
-  .card {
-    padding: 10px;
   }
 </style>

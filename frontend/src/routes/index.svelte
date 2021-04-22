@@ -1,5 +1,4 @@
 <script>
-  import 'carbon-components-svelte/css/g10.css';
   import { Button } from 'carbon-components-svelte';
   import Fa from 'svelte-fa';
   import { faTshirt } from '@fortawesome/free-solid-svg-icons';
