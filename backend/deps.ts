@@ -4,3 +4,4 @@ export { Collection } from "https://deno.land/x/mongo@v0.22.0/src/collection/mod
 import axiod from "https://deno.land/x/axiod/mod.ts";
 export { axiod };
 export { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";
+export { oakCors } from "https://deno.land/x/cors/mod.ts";

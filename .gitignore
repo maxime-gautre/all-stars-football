@@ -2,6 +2,10 @@
 
 bin
 
+# frontend
+frontend/.svelte
+frontend/build
+
 **/node_modules/
 **/dist*/
 **/.cache/
