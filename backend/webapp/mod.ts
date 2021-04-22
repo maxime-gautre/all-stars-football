@@ -1,8 +1,5 @@
 import { Application, Context, getQuery, oakCors, Router } from "../deps.ts";
-import {
-  getPlayers,
-  PlayerContext,
-} from "./src/domain/players.ts";
+import { getPlayers, PlayerContext } from "./src/domain/players.ts";
 import {
   listPlayers,
   searchPlayers,
