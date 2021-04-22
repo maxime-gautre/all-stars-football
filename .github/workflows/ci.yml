@@ -46,6 +46,8 @@ jobs:
         run: make lint
       - name: Compile
         run: make compile
+      - name: Tests
+        run: make test
 
   frontend:
     runs-on: ubuntu-latest

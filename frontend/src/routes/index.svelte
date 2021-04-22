@@ -1,7 +1,8 @@
-<script>
+<script lang="ts">
   import { Button } from 'carbon-components-svelte';
   import Fa from 'svelte-fa';
-  import { faTshirt } from '@fortawesome/free-solid-svg-icons';
+  import { faTshirt, faTimes } from '@fortawesome/free-solid-svg-icons';
+  import { playerStore } from '$lib/stores/playerStore';
 </script>
 
 <div class="background">
@@ -14,56 +15,35 @@
     </div>
     <div class="container">
       <div class="container--field container--section">
-        <div class="player player-goalkeeper">
-          <Fa icon={faTshirt} size="3x" />
-        </div>
-        <div class="player player-one">
-          <Fa icon={faTshirt} size="3x" />
-        </div>
-        <div class="player player-two">
-          <Fa icon={faTshirt} size="3x" />
-        </div>
-        <div class="player player-three">
-          <Fa icon={faTshirt} size="3x" />
-        </div>
-        <div class="player player-four">
-          <Fa icon={faTshirt} size="3x" />
-        </div>
-        <div class="player player-five">
-          <Fa icon={faTshirt} size="3x" />
-        </div>
-        <div class="player player-six">
-          <Fa icon={faTshirt} size="3x" />
-        </div>
-        <div class="player player-seven">
-          <Fa icon={faTshirt} size="3x" />
-        </div>
-        <div class="player player-eight">
-          <Fa icon={faTshirt} size="3x" />
-        </div>
-        <div class="player player-nine">
-          <Fa icon={faTshirt} size="3x" />
-        </div>
-        <div class="player player-ten">
-          <Fa icon={faTshirt} size="3x" />
-        </div>
+        {#each Array(11) as _, i}
+          <div class="player player-{i}">
+            {#if $playerStore[i]}
+              <div style="text-align: center">
+                <div on:click={() => playerStore.unVote($playerStore[i].id)}>
+                  <Fa icon={faTimes} color="#333" />
+                </div>
+                <img
+                  src={$playerStore[i].photo}
+                  alt="{$playerStore[i].name}'s picture"
+                  width="50"
+                />
+                <div>{$playerStore[i].name}</div>
+              </div>
+            {:else}
+              <Fa icon={faTshirt} size="3x" />
+            {/if}
+          </div>
+        {/each}
       </div>
     </div>
   </div>
   <div class="actions">
     <Button href="/players">Search players</Button>
-    <Button>Submit your vote</Button>
+    <Button href="/vote">Submit your vote</Button>
   </div>
 </div>
 
 <style>
-  .background {
-    background-color: #eee;
-    height: 100vh;
-    /*background: url("static/pitch_8.jpg") repeat center center fixed;*/
-    /*background-size: cover;*/
-  }
-
   .title {
     text-align: center;
     margin: 0;
@@ -139,23 +119,23 @@
     justify-content: center;
   }
 
-  .player-goalkeeper {
+  .player-0 {
     grid-row: span 12;
   }
 
-  .player-one,
-  .player-two,
-  .player-three,
-  .player-four {
+  .player-1,
+  .player-2,
+  .player-3,
+  .player-4 {
     grid-row: span 3;
   }
 
-  .player-five,
-  .player-six,
-  .player-seven,
-  .player-eight,
-  .player-nine,
-  .player-ten {
+  .player-5,
+  .player-6,
+  .player-7,
+  .player-8,
+  .player-9,
+  .player-10 {
     grid-row: span 4;
   }
 </style>

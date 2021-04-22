@@ -1,12 +1,30 @@
 <script lang="ts">
-  import type { PlayerInfo } from '../shared/types.ts';
+  import { Button } from 'carbon-components-svelte';
+  import type { PlayerInfo } from '../shared/types';
+  import { playerStore } from '../stores/playerStore';
+
   export let player: PlayerInfo;
+  $: disableVote = $playerStore.length > 10;
+  $: hasVote = !!$playerStore.find((_) => _.id === player.id);
+
+  function handleVote() {
+    playerStore.vote({
+      id: player.id,
+      name: player.name,
+      photo: player.photo,
+    });
+  }
 </script>
 
 <div class="player">
   <img src={player.photo} alt="{player.name}'s photo" />
   <h3>{player.name}</h3>
   <div>{player.nationality}</div>
+  {#if hasVote}
+    <Button kind="outline" on:click={() => playerStore.unVote(player.id)}>Unvote</Button>
+  {:else}
+    <Button kind="secondary" on:click={handleVote} disabled={disableVote}>Vote</Button>
+  {/if}
 </div>
 
 <style>
