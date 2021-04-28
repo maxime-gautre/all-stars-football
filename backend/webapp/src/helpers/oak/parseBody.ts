@@ -1,6 +1,4 @@
 import { Context, validation as v } from "../../../../deps.ts";
-import { vote } from "../../domain/vote.ts";
-import { InvalidVoteException } from "../../domain/types.ts";
 
 export async function parseBody<T>(
   ctx: Context,
