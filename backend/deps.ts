@@ -6,3 +6,5 @@ export { axiod };
 export { Application, Context, Router } from "https://deno.land/x/oak/mod.ts";
 export { oakCors } from "https://deno.land/x/cors/mod.ts";
 export { getQuery } from "https://deno.land/x/oak/helpers.ts";
+import * as validation from "https://raw.githubusercontent.com/AlexGalays/idonttrustlikethat/master/src/validation.ts";
+export { validation }

@@ -2,14 +2,30 @@ import { Application, Context, getQuery, oakCors, Router } from "../deps.ts";
 import { getPlayers, PlayerContext } from "./src/domain/players.ts";
 import {
   listPlayers,
+  listPlayersById,
   searchPlayers,
+  updatePlayersVoteCount,
 } from "./src/adapters/repositoryPlayers.ts";
 import { loggerContext } from "./logger.ts";
-import get = Reflect.get;
+import { vote, VoteContext } from "./src/domain/vote.ts";
+import { getLastVote, saveVote } from "./src/adapters/repositoryVote.ts";
+import {
+  InvalidVoteException,
+  votePayloadValidator,
+} from "./src/domain/types.ts";
+import { parseBody } from "./src/helpers/oak/parseBody.ts";
 
 const playerContext: PlayerContext = {
   listPlayers,
   searchPlayers,
+  ...loggerContext,
+};
+
+const voteContext: VoteContext = {
+  getLastVote,
+  saveVote,
+  listPlayersById,
+  updatePlayersVoteCount,
   ...loggerContext,
 };
 
@@ -29,7 +45,26 @@ router
     const players = await getPlayers(playerContext)(searchQuery);
     ctx.response.status = 200;
     ctx.response.body = players;
-  });
+  })
+  .post(
+    "/vote",
+    (ctx: Context) =>
+      parseBody(ctx, votePayloadValidator, async (votePayload) => {
+        try {
+          const savedVote = await vote(voteContext)(votePayload);
+          ctx.response.status = 200;
+          ctx.response.body = savedVote;
+        } catch (error) {
+          if (error instanceof InvalidVoteException) {
+            ctx.response.status = 400;
+            ctx.response.body = {
+              message: "Invalid vote",
+              errors: error.errors,
+            };
+          }
+        }
+      }),
+  );
 
 const app = new Application();
 app.use(oakCors({

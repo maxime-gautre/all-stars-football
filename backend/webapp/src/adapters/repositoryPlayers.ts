@@ -27,3 +27,19 @@ export function searchPlayers(
     ).skip(offset).limit(limit).toArray();
   });
 }
+
+export function listPlayersById(playerIds: number[]): Promise<Player[]> {
+  return executeQuery("players", (collection: Collection<Player>) => {
+    return collection.find({ id: { $in: playerIds } }).toArray();
+  });
+}
+
+export function updatePlayersVoteCount(playerIds: number[]) {
+  return executeQuery("players", (collection: Collection<Player>) => {
+    return collection.updateMany({ id: { $in: playerIds } }, {
+      $inc: {
+        vote: 1,
+      },
+    }).then((_) => undefined);
+  });
+}

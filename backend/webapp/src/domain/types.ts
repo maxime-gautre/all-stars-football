@@ -1,3 +1,5 @@
+import { validation as v } from "../../../deps.ts";
+
 type PlayerInfo = {
   id: number;
   name: string;
@@ -86,4 +88,25 @@ type Statistics = {
 
 export type Player = PlayerInfo & {
   statistics: Statistics[];
+  votes: number;
 };
+
+export type Vote = {
+  email: string;
+  name: string;
+  votedDate: Date;
+};
+
+export type VotePayload = typeof votePayloadValidator.T;
+
+export const votePayloadValidator = v.object({
+  email: v.string,
+  name: v.string,
+  playersSelection: v.array(v.number),
+});
+
+export class InvalidVoteException extends Error {
+  constructor(public readonly errors: string[]) {
+    super(`Invalid vote: ${errors.join("\n")}`);
+  }
+}

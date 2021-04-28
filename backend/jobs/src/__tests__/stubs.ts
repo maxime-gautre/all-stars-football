@@ -38,6 +38,7 @@ export class InMemoryJobStore {
     }
     return Promise.resolve(jobId);
   }
+
   completeJob(jobId: string): Promise<string> {
     const maybeJob = this.jobStore.get(jobId);
     if (maybeJob) {
