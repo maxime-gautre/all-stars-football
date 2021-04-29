@@ -6,12 +6,10 @@
 </script>
 
 <div class="background">
-  <div class="triangle-top-left" />
-  <div class="triangle-top-right" />
   <h2 class="title">Best XI</h2>
   <div class="parent">
     <div class="image-container">
-      <img src="./static/pitch_3.jpg" class="pitch" alt="Football field" />
+      <img src="./static/pitch.jpg" class="pitch" alt="Football field" />
     </div>
     <div class="container">
       <div class="container--field container--section">
