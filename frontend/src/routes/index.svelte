@@ -1,34 +1,31 @@
 <script lang="ts">
-  import { Button } from 'carbon-components-svelte';
+  import { Button, ButtonSet } from 'carbon-components-svelte';
+  import { Search20, SendFilled20 } from 'carbon-icons-svelte';
   import Fa from 'svelte-fa';
-  import { faTshirt, faTimes } from '@fortawesome/free-solid-svg-icons';
+  import { faTshirt } from '@fortawesome/free-solid-svg-icons';
   import { playerStore } from '$lib/stores/playerStore';
+  import SelectedPlayerCard from '../lib/components/SelectedPlayerCard.svelte';
+
+  const NumberOfPlayers = 11;
 </script>
 
-<div class="background">
+<div>
   <h2 class="title">Best XI</h2>
   <div class="parent">
     <div class="image-container">
       <img src="./static/pitch.jpg" class="pitch" alt="Football field" />
     </div>
     <div class="container">
-      <div class="container--field container--section">
-        {#each Array(11) as _, i}
+      <div class="container--field">
+        {#each Array(NumberOfPlayers) as _, i}
           <div class="player player-{i}">
             {#if $playerStore[i]}
-              <div style="text-align: center">
-                <div on:click={() => playerStore.unVote($playerStore[i].id)}>
-                  <Fa icon={faTimes} color="#333" />
-                </div>
-                <img
-                  src={$playerStore[i].photo}
-                  alt="{$playerStore[i].name}'s picture"
-                  width="50"
-                />
-                <div>{$playerStore[i].name}</div>
-              </div>
+              <SelectedPlayerCard
+                player={$playerStore[i]}
+                onClose={() => playerStore.unVote($playerStore[i].id)}
+              />
             {:else}
-              <Fa icon={faTshirt} size="3x" />
+              <Fa color="#FFF" icon={faTshirt} size="3x" />
             {/if}
           </div>
         {/each}
@@ -36,8 +33,12 @@
     </div>
   </div>
   <div class="actions">
-    <Button href="/players">Search players</Button>
-    <Button href="/vote">Submit your vote</Button>
+    <ButtonSet>
+      <Button href="/players" kind="secondary" icon={Search20}>Search players</Button>
+      <Button href="/vote" icon={SendFilled20} disabled={$playerStore.length !== NumberOfPlayers}
+        >Submit your vote</Button
+      >
+    </ButtonSet>
   </div>
 </div>
 
@@ -46,26 +47,6 @@
     text-align: center;
     margin: 0;
     padding: 20px 0;
-  }
-
-  .triangle-top-left {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 0;
-    height: 0;
-    border-top: 70px solid #103252;
-    border-right: 140px solid transparent;
-  }
-
-  .triangle-top-right {
-    position: fixed;
-    top: 0;
-    right: 0;
-    width: 0;
-    height: 0;
-    border-top: 70px solid #103252;
-    border-left: 140px solid transparent;
   }
 
   .parent {
@@ -101,7 +82,6 @@
   .container--field {
     background-color: transparent;
     border-radius: 10px;
-    color: #fff;
     display: grid;
     grid-auto-flow: column;
     grid-gap: 30px;

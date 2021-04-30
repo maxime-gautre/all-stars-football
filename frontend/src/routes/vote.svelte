@@ -1,5 +1,6 @@
 <script lang="ts">
   import { Button, InlineNotification, Form, FormGroup, TextInput } from 'carbon-components-svelte';
+  import { SendFilled20 } from 'carbon-icons-svelte';
 
   import { playerStore } from '$lib/stores/playerStore';
 
@@ -65,8 +66,8 @@
       <TextInput labelText="Name:" type="text" name="name" required placeholder="Enter you name" />
     </FormGroup>
     <div class="actions">
-      <Button type="submit">Submit</Button>
-      <Button kind="outline" href="/">Cancel</Button>
+      <Button type="submit" icon={SendFilled20}>Submit</Button>
+      <Button kind="ghost" href="/">Cancel</Button>
     </div>
   </Form>
 </div>
@@ -76,7 +77,7 @@
     min-height: 100vh;
     height: 100%;
     padding: 2em;
-    width: 40vw;
+    width: 50vw;
     margin-left: auto;
     margin-right: auto;
     background-color: #fff;

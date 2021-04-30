@@ -1,9 +1,10 @@
 import { writable } from 'svelte/store';
 
-type SelectedPlayer = {
+export type SelectedPlayer = {
   id: number;
   name: string;
   photo: string;
+  teamLogo: string;
 };
 
 function store() {

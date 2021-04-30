@@ -1,5 +1,7 @@
 <script lang="ts" context="module">
   import type { LoadOutput } from '@sveltejs/kit/types/page';
+  import { Button } from 'carbon-components-svelte';
+
   const apiURL = 'http://localhost:8080/players';
 
   export async function load(): Promise<LoadOutput> {
@@ -15,10 +17,11 @@
 <script lang="ts">
   import { Search } from 'carbon-components-svelte';
   import { debounce } from '$lib/utils/debounce.ts';
-  import type { PlayerInfo } from '$lib/shared/types.ts';
+  import { ChevronLeft20 } from 'carbon-icons-svelte';
+  import type { Player } from '$lib/shared/types.ts';
   import PlayerCard from '$lib/components/PlayerCard.svelte';
 
-  export let players: PlayerInfo[];
+  export let players: Player[];
 
   async function onChange(event) {
     const response = await fetch(`http://localhost:8080/search/?search=${event.target.value}`);
@@ -34,9 +37,17 @@
 </script>
 
 <div class="container">
+  <div class="back">
+    <Button kind="secondary" href="/">
+      <div style="display: flex; align-items: center">
+        <ChevronLeft20 />
+        <span style="margin-left: 3px">See your choices</span>
+      </div>
+    </Button>
+  </div>
   <Search on:input={debounceOnChange} on:clear={onClear} />
   <div class="players">
-    {#each players as player}
+    {#each players as player (player.id)}
       <div class="player">
         <PlayerCard {player} />
       </div>
@@ -53,11 +64,16 @@
     background-color: #fff;
   }
 
+  .back {
+    position: fixed;
+    left: 4%;
+  }
+
   .players {
     margin-top: 50px;
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    grid-gap: 20px;
+    grid-template-columns: repeat(4, 1fr);
+    grid-gap: 30px 15px;
   }
 
   .player {
