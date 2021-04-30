@@ -1,10 +1,9 @@
 <script lang="ts">
-  import { Button, ButtonSet } from 'carbon-components-svelte';
-  import { Search20, SendFilled20 } from 'carbon-icons-svelte';
-  import Fa from 'svelte-fa';
-  import { faTshirt } from '@fortawesome/free-solid-svg-icons';
-  import { playerStore } from '$lib/stores/playerStore';
+  import {Button, ButtonSet} from 'carbon-components-svelte';
+  import {Search20, SendFilled20} from 'carbon-icons-svelte';
+  import {playerStore} from '$lib/stores/playerStore';
   import SelectedPlayerCard from '../lib/components/SelectedPlayerCard.svelte';
+  import JerseyIcon from "../lib/components/JerseyIcon.svelte";
 
   const NumberOfPlayers = 11;
 </script>
@@ -25,7 +24,8 @@
                 onClose={() => playerStore.unVote($playerStore[i].id)}
               />
             {:else}
-              <Fa color="#FFF" icon={faTshirt} size="3x" />
+              <JerseyIcon/>
+<!--              <Fa color="#FFF" icon={faTshirt} size="3x" />-->
             {/if}
           </div>
         {/each}
@@ -74,7 +74,7 @@
 
   .container {
     position: absolute;
-    top: 120px;
+    top: 70px;
     left: 240px;
     width: 53vw;
   }
@@ -84,7 +84,7 @@
     border-radius: 10px;
     display: grid;
     grid-auto-flow: column;
-    grid-gap: 30px;
+    grid-gap: 35px;
     grid-template-rows: repeat(12, 1fr);
     grid-template-columns: repeat(4, 1fr);
     padding: 1em;
