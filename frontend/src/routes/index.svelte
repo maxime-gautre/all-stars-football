@@ -13,7 +13,7 @@
   <h2 class="title">Best XI</h2>
   <div class="parent">
     <div class="image-container">
-      <img src="./static/pitch.jpg" class="pitch" alt="Football field" />
+      <img src="/pitch.jpg" class="pitch" alt="Football field" />
     </div>
     <div class="container">
       <div class="container--field">

@@ -9,7 +9,7 @@
 <style>
   .background {
     min-height: 100vh;
-    background-image: url('static/soccer-pattern.png');
+    background-image: url('/soccer-pattern.png');
     background-position: center center;
     background-repeat: repeat;
     background-size: 400px;
