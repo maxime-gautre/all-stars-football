@@ -4,7 +4,9 @@ import { executeQuery } from "../../../shared/mongoUtils.ts";
 
 export function listPlayers(limit: number, offset: number): Promise<Player[]> {
   return executeQuery("players", (collection: Collection<Player>) => {
-    return collection.find({}).skip(offset).limit(limit).toArray();
+    return collection.find({}, { sort: { "total.goals.total": -1 } }).skip(
+      offset,
+    ).limit(limit).toArray();
   });
 }
 

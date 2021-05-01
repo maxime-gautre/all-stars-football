@@ -82,7 +82,7 @@ export function bulkUpsert<T>(
       for (const doc of docs) {
         await collection.updateOne(
           { id: doc.id },
-          doc,
+          { $set: doc },
           { upsert: true },
         );
       }

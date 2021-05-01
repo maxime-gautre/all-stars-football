@@ -5,10 +5,10 @@ import {
   listPlayersById,
   searchPlayers,
   updatePlayersVoteCount,
-} from "./src/adapters/repositoryPlayers.ts";
+} from "./src/datasources/repositoryPlayers.ts";
 import { loggerContext } from "./logger.ts";
 import { vote, VoteContext } from "./src/domain/vote.ts";
-import { getLastVote, saveVote } from "./src/adapters/repositoryVote.ts";
+import { getLastVote, saveVote } from "./src/datasources/repositoryVote.ts";
 import {
   InvalidVoteException,
   votePayloadValidator,

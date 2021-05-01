@@ -1,6 +1,6 @@
 import { Collection } from "../../../deps.ts";
 import { bulkUpsert, executeQuery } from "../../../shared/mongoUtils.ts";
-import { FootballApiTeam, Team, Venue } from "./types.ts";
+import { FootballApiTeam, Team, Venue } from "../types.ts";
 import { FootballApiResponse } from "../utils/apifootball/types.ts";
 import { fetchData } from "../utils/apifootball/apiFootball.ts";
 

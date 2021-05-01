@@ -1,13 +1,13 @@
 import { log } from "../deps.ts";
 import { Context, populatePlayers } from "./src/populatePlayers.ts";
-import { fetchPlayers, savePlayers } from "./src/players/player.ts";
+import { fetchPlayers, savePlayers } from "./src/datasources/player.ts";
 import {
   completeJob,
   findLastJob,
   initJob,
   updateJobIdWithCurrentTeam,
-} from "./src/jobs/job.ts";
-import { fetchTeams, getTeamsIds, saveTeams } from "./src/teams/team.ts";
+} from "./src/datasources/job.ts";
+import { fetchTeams, getTeamsIds, saveTeams } from "./src/datasources/team.ts";
 
 const context: Context = {
   jobApi: {
