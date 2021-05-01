@@ -35,9 +35,9 @@
   <div class="actions">
     <ButtonSet>
       <Button href="/players" kind="secondary" icon={Search20}>Search players</Button>
-      <Button href="/vote" icon={SendFilled20} disabled={$playerStore.length !== NumberOfPlayers}
-        >Submit your vote</Button
-      >
+      <Button href="/vote" icon={SendFilled20} disabled={$playerStore.length !== NumberOfPlayers}>
+        Submit your vote
+      </Button>
     </ButtonSet>
   </div>
 </div>

@@ -1,11 +1,10 @@
 <script lang="ts" context="module">
   import type { LoadOutput } from '@sveltejs/kit/types/page';
   import { Button } from 'carbon-components-svelte';
-
-  const apiURL = 'http://localhost:8080/players';
+  import { get } from '$lib/utils/api.ts';
 
   export async function load(): Promise<LoadOutput> {
-    const response = await fetch(apiURL);
+    const response = await get('players');
     return {
       props: {
         players: await response.json(),
@@ -24,16 +23,16 @@
   export let players: Player[];
 
   async function onChange(event) {
-    const response = await fetch(`http://localhost:8080/search/?search=${event.target.value}`);
+    const response = await get(`search?search=${event.target.value}`);
     players = await response.json();
   }
 
   async function onClear() {
-    const response = await fetch('http://localhost:8080/players');
+    const response = await get('players');
     players = await response.json();
   }
 
-  const debounceOnChange = debounce((e) => onChange(e), 500);
+  const debounceOnChange = debounce((e) => onChange(e), 400);
 </script>
 
 <div class="container">

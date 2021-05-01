@@ -3,6 +3,7 @@
   import { SendFilled20 } from 'carbon-icons-svelte';
 
   import { playerStore } from '$lib/stores/playerStore';
+  import { post } from '$lib/utils/api.ts';
 
   let formError = {
     message: '',
@@ -15,13 +16,7 @@
       ...Object.fromEntries(formData),
       playersSelection: $playerStore.map((_) => _.id),
     };
-    const response = await fetch('http://localhost:8080/vote', {
-      method: 'POST',
-      body: JSON.stringify(payload),
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
+    const response = await post('vote', payload);
     if (response.status >= 400 && response.status < 500) {
       const responseError = await response.json();
       formError = responseError;
