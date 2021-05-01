@@ -1,7 +1,5 @@
 import { faker } from "../../../dev_deps.ts";
-import { Job } from "../jobs/types.ts";
-import { FootballApiTeam } from "../teams/types.ts";
-import { FootballApiPlayer } from "../players/types.ts";
+import { FootballApiPlayer, FootballApiTeam, Job, Player } from "../types.ts";
 import { FootballApiResponse } from "../utils/apifootball/types.ts";
 
 export class InMemoryJobStore {
@@ -52,35 +50,39 @@ export class InMemoryJobStore {
 }
 
 export class InMemoryTeamsStore {
-  private readonly teamsStore = new Map<number, FootballApiTeam>();
+  private readonly teamsStore: FootballApiTeam[] = [];
   constructor(private readonly initTeams: FootballApiTeam[] = []) {
-    void this.saveTeams(initTeams);
+    this.teamsStore = [...initTeams];
   }
 
   saveTeams(teams: FootballApiTeam[]): Promise<void> {
     teams.forEach((el) => {
-      this.teamsStore.set(el.team.id, el);
+      this.teamsStore.push(el);
     });
     return Promise.resolve();
   }
 
   getTeamsIds(): Promise<number[]> {
-    return Promise.resolve(Array.from(this.teamsStore.keys()));
+    return Promise.resolve(Array.from(this.teamsStore.map((_) => _.team.id)));
   }
 }
 
 export class InMemoryPlayerStore {
-  private readonly playerStore = new Map<number, FootballApiPlayer>();
+  private readonly playerStore: Player[] = [];
 
-  savePlayers(players: FootballApiPlayer[]): Promise<void> {
+  savePlayers(players: Player[]): Promise<void> {
     players.forEach((el) => {
-      this.playerStore.set(el.player.id, el);
+      this.playerStore.push(el);
     });
     return Promise.resolve();
   }
 
-  listPlayers(): FootballApiPlayer[] {
-    return Array.from(this.playerStore.values());
+  listPlayers(): Player[] {
+    return this.playerStore;
+  }
+
+  getPlayer(id: number): Player | undefined {
+    return this.playerStore.find((_) => _.id === id);
   }
 }
 
@@ -257,7 +259,7 @@ export const cityPlayers = {
           },
           fouls: {
             drawn: 30,
-            committed: 24,
+            committed: null,
           },
           cards: {
             yellow: 1,
@@ -339,7 +341,7 @@ export const cityPlayers = {
             red: 0,
           },
           penalty: {
-            won: null,
+            won: 1,
             commited: null,
             scored: 0,
             missed: 0,

@@ -1,4 +1,11 @@
-type Player = {
+export type Job = {
+  id: string;
+  startDate: Date;
+  endDate?: Date;
+  teamId?: number;
+};
+
+type PlayerInfo = {
   id: number;
   name: string;
   firstname: string;
@@ -12,9 +19,9 @@ type Player = {
 };
 
 type Nullable<T> = T | null;
-type NullableStats = Nullable<number>;
+export type NullableStats = Nullable<number>;
 
-type Statistics = {
+export type Statistics = {
   team: {
     id: number;
     name: string;
@@ -36,6 +43,11 @@ type Statistics = {
     position: string;
     rating: Nullable<string>;
     captain: boolean;
+  };
+  substitutes: {
+    in: NullableStats;
+    out: NullableStats;
+    bench: NullableStats;
   };
   shots: {
     total: NullableStats;
@@ -85,6 +97,44 @@ type Statistics = {
 };
 
 export type FootballApiPlayer = {
-  player: Player;
+  player: PlayerInfo;
   statistics: Statistics[];
 };
+
+type PersonalInfo = Omit<PlayerInfo, "id">;
+
+export type Player = {
+  id: number;
+  personalInfo: PersonalInfo;
+  total: Statistics;
+  statistics: NonEmptyArray<Statistics>;
+};
+
+export type Team = {
+  id: number;
+  name: string;
+  country: string;
+  founded: number;
+  national: boolean;
+  logo: string;
+};
+
+export type Venue = {
+  id: number;
+  name: string;
+  address: string;
+  city: string;
+  capacity: number;
+  surface: string;
+  image: string;
+};
+
+export type FootballApiTeam = {
+  team: Team;
+  venue: Venue;
+};
+
+export type NonEmptyArray<T> = [T, ...T[]];
+export function isNonEmptyArray<T>(arr: T[]): arr is NonEmptyArray<T> {
+  return arr.length > 0;
+}

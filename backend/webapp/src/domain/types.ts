@@ -1,7 +1,6 @@
 import { validation as v } from "../../../deps.ts";
 
 type PlayerInfo = {
-  id: number;
   name: string;
   firstname: string;
   lastname: string;
@@ -38,6 +37,11 @@ type Statistics = {
     position: string;
     rating: Nullable<string>;
     captain: boolean;
+  };
+  substitutes: {
+    in: NullableStats;
+    out: NullableStats;
+    bench: NullableStats;
   };
   shots: {
     total: NullableStats;
@@ -86,8 +90,13 @@ type Statistics = {
   };
 };
 
-export type Player = PlayerInfo & {
-  statistics: Statistics[];
+type NonEmptyArray<T> = [T, ...T[]];
+
+export type Player = {
+  id: number;
+  personalInfo: PlayerInfo;
+  total: Statistics;
+  statistics: NonEmptyArray<Statistics>;
   votes: number;
 };
 

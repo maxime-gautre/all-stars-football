@@ -37,6 +37,11 @@ type Statistics = {
     rating: Nullable<string>;
     captain: boolean;
   };
+  substitutes: {
+    in: NullableStats;
+    out: NullableStats;
+    bench: NullableStats;
+  };
   shots: {
     total: NullableStats;
     on: NullableStats;
@@ -84,7 +89,12 @@ type Statistics = {
   };
 };
 
-export type Player = PlayerInfo & {
-  statistics: Statistics[];
+export type Player = {
+  id: number;
+  personalInfo: PlayerInfo;
+  total: Statistics;
+  statistics: NonEmptyArray<Statistics>;
   votes: number;
 };
+
+type NonEmptyArray<T> = [T, ...T[]];

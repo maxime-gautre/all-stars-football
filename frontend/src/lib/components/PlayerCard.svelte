@@ -8,13 +8,13 @@
   $: disableVote = $playerStore.length > 10;
   $: hasVote = !!$playerStore.find((_) => _.id === player.id);
 
-  const stats = player.statistics[0];
+  const stats = player.total;
 
   function handleVote() {
     playerStore.vote({
       id: player.id,
-      name: player.name,
-      photo: player.photo,
+      name: player.personalInfo.name,
+      photo: player.personalInfo.photo,
       teamLogo: stats.team.logo,
     });
   }
@@ -23,15 +23,19 @@
 <div class="player">
   <div class="players-images">
     <img src={stats.team.logo} alt="Team's player logo" class="team-logo" />
-    <img src={player.photo} alt="{player.name}'s photo" class="player-photo" />
+    <img
+      src={player.personalInfo.photo}
+      alt="{player.personalInfo.name}'s photo"
+      class="player-photo"
+    />
   </div>
   <div>
-    <h5>{player.name}</h5>
+    <h5>{player.personalInfo.name}</h5>
   </div>
   <div class="secondary-info">
     <span>{stats.games.position}</span>
     <span> • </span>
-    <span>{player.age} y/o</span>
+    <span>{player.personalInfo.age} y/o</span>
   </div>
   <div class="stats">
     <span>
@@ -46,7 +50,7 @@
     </span>
     <span>
       <TooltipDefinition tooltipText="Assists">
-        {stats.passes.key || 0} AST
+        {stats.goals.assists || 0} AST
       </TooltipDefinition>
     </span>
   </div>
