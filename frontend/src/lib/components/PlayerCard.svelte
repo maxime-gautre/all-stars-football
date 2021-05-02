@@ -1,5 +1,5 @@
 <script lang="ts">
-  import { TooltipDefinition } from 'carbon-components-svelte';
+  import { TooltipDefinition, TooltipIcon } from 'carbon-components-svelte';
   import type { Player } from '../shared/types';
   import type { ThirdStatsToDisplay } from '../utils/stats.ts';
   import VoteButton from './VoteButton.svelte';
@@ -25,7 +25,11 @@
 
 <div class="player">
   <div class="players-images">
-    <img src={stats.team.logo} alt="Team's player logo" class="team-logo" />
+    <div class="team-logo">
+      <TooltipIcon tooltipText={stats.team.name}>
+        <img src={stats.team.logo} alt="Team's player logo" />
+      </TooltipIcon>
+    </div>
     <img
       src={player.personalInfo.photo}
       alt="{player.personalInfo.name}'s photo"
@@ -84,8 +88,11 @@
   .team-logo {
     position: absolute;
     right: 5px;
-    width: 30px;
     top: 5px;
+  }
+
+  .team-logo img {
+    width: 30px;
   }
 
   .player-photo {
