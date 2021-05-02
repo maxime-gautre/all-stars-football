@@ -1,14 +1,17 @@
 <script lang="ts">
   import { TooltipDefinition } from 'carbon-components-svelte';
   import type { Player } from '../shared/types';
+  import type { ThirdStatsToDisplay } from '../utils/stats.ts';
   import VoteButton from './VoteButton.svelte';
   import { playerStore } from '../stores/playerStore';
 
   export let player: Player;
+  export let highlightStats: ThirdStatsToDisplay;
   $: disableVote = $playerStore.length > 10;
   $: hasVote = !!$playerStore.find((_) => _.id === player.id);
 
   const stats = player.total;
+  const [parentPath, key] = highlightStats.path;
 
   function handleVote() {
     playerStore.vote({
@@ -39,11 +42,6 @@
   </div>
   <div class="stats">
     <span>
-      <TooltipDefinition tooltipText="Games played">
-        {stats.games.appearences || 0} GP
-      </TooltipDefinition>
-    </span>
-    <span>
       <TooltipDefinition tooltipText="Goals">
         {stats.goals.total || 0} GLS
       </TooltipDefinition>
@@ -51,6 +49,12 @@
     <span>
       <TooltipDefinition tooltipText="Assists">
         {stats.goals.assists || 0} AST
+      </TooltipDefinition>
+    </span>
+    <span>
+      <TooltipDefinition tooltipText={highlightStats.tooltipText}>
+        {stats[parentPath][key] || 0}
+        {highlightStats.abbr}
       </TooltipDefinition>
     </span>
   </div>

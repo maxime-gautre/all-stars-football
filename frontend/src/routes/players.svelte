@@ -1,10 +1,9 @@
 <script lang="ts" context="module">
   import type { LoadOutput } from '@sveltejs/kit/types/page';
-  import { Button } from 'carbon-components-svelte';
-  import { get } from '$lib/utils/api.ts';
+  import { get as getFromContextModule } from '$lib/utils/api.ts';
 
   export async function load(): Promise<LoadOutput> {
-    const response = await get('players');
+    const response = await getFromContextModule('players');
     return {
       props: {
         players: await response.json(),
@@ -14,22 +13,37 @@
 </script>
 
 <script lang="ts">
-  import { Search } from 'carbon-components-svelte';
+  import { Button, Search, Select, SelectItem } from 'carbon-components-svelte';
   import { debounce } from '$lib/utils/debounce.ts';
   import { ChevronLeft20 } from 'carbon-icons-svelte';
   import type { Player } from '$lib/shared/types.ts';
+  import { SortByEnum } from '$lib/shared/types.ts';
   import PlayerCard from '$lib/components/PlayerCard.svelte';
+  import { thirdStatsToDisplay } from '../lib/utils/stats.ts';
+  import { get } from '$lib/utils/api.ts';
 
   export let players: Player[];
+  let currentSearchQuery = '';
+  let sortBy;
+  let highlightStats = thirdStatsToDisplay('appearences');
+
+  $: (async () => {
+    if (!sortBy) return;
+    const response = await get(`search?search=${currentSearchQuery}&sortBy=${sortBy}`);
+    players = await response.json();
+    highlightStats = thirdStatsToDisplay(sortBy);
+  })();
 
   async function onChange(event) {
-    const response = await get(`search?search=${event.target.value}`);
-    players = await response.json();
+    currentSearchQuery = event.target.value;
   }
 
   async function onClear() {
-    const response = await get('players');
-    players = await response.json();
+    currentSearchQuery = '';
+  }
+
+  async function onSortChange(event) {
+    sortBy = event.detail;
   }
 
   const debounceOnChange = debounce((e) => onChange(e), 400);
@@ -38,17 +52,29 @@
 <div class="container">
   <div class="back">
     <Button kind="secondary" href="/">
-      <div style="display: flex; align-items: center">
+      <div class="back-button">
         <ChevronLeft20 />
-        <span style="margin-left: 3px">See your choices</span>
+        <span>See your choices</span>
       </div>
     </Button>
   </div>
-  <Search on:input={debounceOnChange} on:clear={onClear} />
+  <div class="filters">
+    <Select size="xl" labelText="Sort by :" on:change={onSortChange} style="width: 200px">
+      {#each Object.keys(SortByEnum) as sortCriteria}
+        <SelectItem value={sortCriteria} text={SortByEnum[sortCriteria]} />
+      {/each}
+    </Select>
+    <Search on:input={debounceOnChange} on:clear={onClear} style="border-left: 1px solid #ccc;" />
+  </div>
+  <!--    <InlineNotification-->
+  <!--            kind="info"-->
+  <!--            title="Players:"-->
+  <!--            subtitle="Only players from teams playing the UEFA Champions League are displayed."-->
+  <!--    />-->
   <div class="players">
     {#each players as player (player.id)}
       <div class="player">
-        <PlayerCard {player} />
+        <PlayerCard {player} {highlightStats} />
       </div>
     {/each}
   </div>
@@ -60,12 +86,28 @@
     margin-left: auto;
     margin-right: auto;
     padding: 2em 0;
-    background-color: #fff;
+    background-color: #f4f4f4;
   }
 
   .back {
     position: fixed;
     left: 4%;
+    top: 53px;
+  }
+
+  .back-button {
+    display: flex;
+    align-items: center;
+  }
+
+  .back-button span {
+    margin-left: 4px;
+  }
+
+  .filters {
+    display: flex;
+    align-items: flex-end;
+    margin: 0 15px;
   }
 
   .players {
