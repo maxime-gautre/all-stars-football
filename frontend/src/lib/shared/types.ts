@@ -14,7 +14,7 @@ type PlayerInfo = {
 type Nullable<T> = T | null;
 type NullableStats = Nullable<number>;
 
-type Statistics = {
+export type Statistics = {
   team: {
     id: number;
     name: string;
@@ -98,3 +98,14 @@ export type Player = {
 };
 
 type NonEmptyArray<T> = [T, ...T[]];
+
+export enum SortByEnum {
+  goals = 'Goals',
+  assists = 'Assists',
+  appearences = 'Games Played',
+  saves = 'Goals saves',
+  tackles = 'Tackles',
+  dribbles = 'Dribbles',
+}
+
+export type SortCriteria = keyof typeof SortByEnum;

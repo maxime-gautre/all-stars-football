@@ -1,5 +1,13 @@
 import { validation as v } from "../../../deps.ts";
 
+export type Player = {
+  id: number;
+  personalInfo: PlayerInfo;
+  total: Statistics;
+  statistics: NonEmptyArray<Statistics>;
+  votes: number;
+};
+
 type PlayerInfo = {
   name: string;
   firstname: string;
@@ -90,16 +98,6 @@ type Statistics = {
   };
 };
 
-type NonEmptyArray<T> = [T, ...T[]];
-
-export type Player = {
-  id: number;
-  personalInfo: PlayerInfo;
-  total: Statistics;
-  statistics: NonEmptyArray<Statistics>;
-  votes: number;
-};
-
 export type Vote = {
   email: string;
   name: string;
@@ -119,3 +117,20 @@ export class InvalidVoteException extends Error {
     super(`Invalid vote: ${errors.join("\n")}`);
   }
 }
+
+const sortsOptions = [
+  "goals",
+  "appearences",
+  "assists",
+  "saves",
+  "tackles",
+  "dribbles",
+] as const;
+export type SortCriteria = typeof sortsOptions[number];
+
+export const searchPlayersValidator = v.object({
+  search: v.string,
+  sortBy: v.union(...sortsOptions),
+});
+
+type NonEmptyArray<T> = [T, ...T[]];

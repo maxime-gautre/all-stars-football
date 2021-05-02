@@ -1,4 +1,4 @@
-import { Application, Context, getQuery, oakCors, Router } from "../deps.ts";
+import { Application, Context, oakCors, Router } from "../deps.ts";
 import { getPlayers, PlayerContext } from "./src/domain/players.ts";
 import {
   listPlayers,
@@ -11,9 +11,10 @@ import { vote, VoteContext } from "./src/domain/vote.ts";
 import { getLastVote, saveVote } from "./src/datasources/repositoryVote.ts";
 import {
   InvalidVoteException,
+  searchPlayersValidator,
   votePayloadValidator,
 } from "./src/domain/types.ts";
-import { parseBody } from "./src/helpers/oak/parseBody.ts";
+import { parseBody, parseQueryParams } from "./src/helpers/oak/parse.ts";
 
 const playerContext: PlayerContext = {
   listPlayers,
@@ -39,13 +40,18 @@ router
     response.status = 200;
     response.body = players;
   })
-  .get("/search", async (ctx: Context) => {
-    const params = getQuery(ctx);
-    const searchQuery = params.search ?? undefined;
-    const players = await getPlayers(playerContext)(searchQuery);
-    ctx.response.status = 200;
-    ctx.response.body = players;
-  })
+  .get(
+    "/search",
+    (ctx: Context) =>
+      parseQueryParams(ctx, searchPlayersValidator, async (searchParams) => {
+        const players = await getPlayers(playerContext)(
+          searchParams.search,
+          searchParams.sortBy,
+        );
+        ctx.response.status = 200;
+        ctx.response.body = players;
+      }),
+  )
   .post(
     "/vote",
     (ctx: Context) =>
