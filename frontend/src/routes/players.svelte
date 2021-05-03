@@ -16,7 +16,7 @@
   import { Button, Search, Select, SelectItem } from 'carbon-components-svelte';
   import { debounce } from '$lib/utils/debounce.ts';
   import { ChevronLeft20 } from 'carbon-icons-svelte';
-  import type {Player} from '$lib/shared/types.ts';
+  import type { Player } from '$lib/shared/types.ts';
   import { SortByEnum } from '$lib/shared/types.ts';
   import PlayerCard from '$lib/components/PlayerCard.svelte';
   import { thirdStatsToDisplay } from '../lib/utils/stats.ts';
@@ -29,9 +29,9 @@
 
   $: (async () => {
     if (!sortBy && !currentSearchQuery) return;
-    const searchParams = currentSearchQuery !== undefined ? {search: currentSearchQuery}: {}
-    const sortByParams = sortBy ? {sortBy: sortBy} : {}
-    const urlParams = new URLSearchParams({...searchParams, ...sortByParams})
+    const searchParams = currentSearchQuery !== undefined ? { search: currentSearchQuery } : {};
+    const sortByParams = sortBy ? { sortBy: sortBy } : {};
+    const urlParams = new URLSearchParams({ ...searchParams, ...sortByParams });
     const response = await get(`search?${urlParams}`);
     players = await response.json();
     highlightStats = thirdStatsToDisplay(sortBy);
