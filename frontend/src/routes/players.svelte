@@ -23,13 +23,16 @@
   import { get } from '$lib/utils/api.ts';
 
   export let players: Player[];
-  let currentSearchQuery = '';
+  let currentSearchQuery;
   let sortBy;
   let highlightStats = thirdStatsToDisplay('appearences');
 
   $: (async () => {
-    if (!sortBy) return;
-    const response = await get(`search?search=${currentSearchQuery}&sortBy=${sortBy}`);
+    if (!sortBy && !currentSearchQuery) return;
+    const searchParams = currentSearchQuery !== undefined ? { search: currentSearchQuery } : {};
+    const sortByParams = sortBy ? { sortBy: sortBy } : {};
+    const urlParams = new URLSearchParams({ ...searchParams, ...sortByParams });
+    const response = await get(`search?${urlParams}`);
     players = await response.json();
     highlightStats = thirdStatsToDisplay(sortBy);
   })();
@@ -40,10 +43,6 @@
 
   async function onClear() {
     currentSearchQuery = '';
-  }
-
-  async function onSortChange(event) {
-    sortBy = event.detail;
   }
 
   const debounceOnChange = debounce((e) => onChange(e), 400);
@@ -59,7 +58,7 @@
     </Button>
   </div>
   <div class="filters">
-    <Select size="xl" labelText="Sort by :" on:change={onSortChange} style="width: 200px">
+    <Select size="xl" labelText="Sort by :" bind:selected={sortBy} style="width: 200px">
       {#each Object.keys(SortByEnum) as sortCriteria}
         <SelectItem value={sortCriteria} text={SortByEnum[sortCriteria]} />
       {/each}

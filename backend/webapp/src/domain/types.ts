@@ -129,8 +129,8 @@ const sortsOptions = [
 export type SortCriteria = typeof sortsOptions[number];
 
 export const searchPlayersValidator = v.object({
-  search: v.string,
-  sortBy: v.union(...sortsOptions),
+  search: v.string.optional(),
+  sortBy: v.union(...sortsOptions).optional(),
 });
 
 type NonEmptyArray<T> = [T, ...T[]];
