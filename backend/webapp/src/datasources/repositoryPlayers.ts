@@ -1,5 +1,5 @@
 import { Collection } from "../../../deps.ts";
-import { Player, SortCriteria } from "../domain/types.ts";
+import { Player, PlayerPosition, SortCriteria } from "../domain/types.ts";
 import { executeQuery } from "../../../shared/mongoUtils.ts";
 
 function mappingSort(sortBy: SortCriteria): string {
@@ -33,12 +33,16 @@ function sortDocument(sortBy: SortCriteria) {
 
 export function listPlayers(
   sortBy: SortCriteria,
+  positions: PlayerPosition[],
   limit: number,
   offset: number,
 ): Promise<Player[]> {
   const sortDoc = sortDocument(sortBy);
+  const findDoc = positions.length === 0
+    ? {}
+    : { "total.games.position": { $in: positions } };
   return executeQuery("players", (collection: Collection<Player>) => {
-    return collection.find({}, { sort: sortDoc }).skip(
+    return collection.find(findDoc, { sort: sortDoc }).skip(
       offset,
     ).limit(limit).toArray();
   });
@@ -47,12 +51,17 @@ export function listPlayers(
 export function searchPlayers(
   searchQuery: string,
   sortBy: SortCriteria,
+  positions: PlayerPosition[],
   limit: number,
   offset: number,
 ): Promise<Player[]> {
   const sortDoc = sortDocument(sortBy);
+  const findDoc = positions.length === 0
+    ? {}
+    : { "total.games.position": { $in: positions } };
   return executeQuery("players", (collection: Collection<Player>) => {
     return collection.find({
+      ...findDoc,
       $text: {
         $search: searchQuery,
       },

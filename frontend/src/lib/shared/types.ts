@@ -109,3 +109,6 @@ export enum SortByEnum {
 }
 
 export type SortCriteria = keyof typeof SortByEnum;
+
+export const playerPositionOptions = ['Goalkeeper', 'Defender', 'Midfielder', 'Attacker'] as const;
+export type PlayerPosition = typeof playerPositionOptions[number];
