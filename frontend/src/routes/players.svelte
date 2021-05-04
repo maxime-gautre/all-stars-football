@@ -13,11 +13,11 @@
 </script>
 
 <script lang="ts">
-  import { Button, Search, Select, SelectItem } from 'carbon-components-svelte';
+  import { Button, Checkbox, Search, Select, SelectItem } from 'carbon-components-svelte';
   import { debounce } from '$lib/utils/debounce.ts';
   import { ChevronLeft20 } from 'carbon-icons-svelte';
   import type { Player } from '$lib/shared/types.ts';
-  import { SortByEnum } from '$lib/shared/types.ts';
+  import { SortByEnum, playerPositionOptions } from '$lib/shared/types.ts';
   import PlayerCard from '$lib/components/PlayerCard.svelte';
   import { thirdStatsToDisplay } from '../lib/utils/stats.ts';
   import { get } from '$lib/utils/api.ts';
@@ -27,11 +27,22 @@
   let sortBy;
   let highlightStats = thirdStatsToDisplay('appearences');
 
+  const positionCheckboxes = playerPositionOptions.map((key) => ({
+    position: key,
+    checked: false,
+  }));
+
   $: (async () => {
-    if (!sortBy && currentSearchQuery === undefined) return;
+    const hasChecked = positionCheckboxes.every((_) => !_.checked);
+    if (!sortBy && currentSearchQuery === undefined && hasChecked) return;
+    const positionFilters = positionCheckboxes
+      .filter((_) => _.checked)
+      .map(({ position }) => position);
+
     const searchParams = currentSearchQuery !== undefined ? { search: currentSearchQuery } : {};
     const sortByParams = sortBy ? { sortBy: sortBy } : {};
-    const urlParams = new URLSearchParams({ ...searchParams, ...sortByParams });
+    const positionParams = positionFilters.length > 0 ? { positions: positionFilters } : {};
+    const urlParams = new URLSearchParams({ ...searchParams, ...sortByParams, ...positionParams });
     const response = await get(`search?${urlParams}`);
     players = await response.json();
     highlightStats = thirdStatsToDisplay(sortBy);
@@ -64,6 +75,14 @@
       {/each}
     </Select>
     <Search on:input={debounceOnChange} on:clear={onClear} style="border-left: 1px solid #ccc;" />
+  </div>
+  <div class="position-filter">
+    <div class="checkboxes">
+      <div class="checkboxes-label">Position:</div>
+      {#each positionCheckboxes as { position, checked }}
+        <Checkbox labelText={position} bind:checked style="margin-left: 10px;" />
+      {/each}
+    </div>
   </div>
   <!--    <InlineNotification-->
   <!--            kind="info"-->
@@ -107,6 +126,21 @@
     display: flex;
     align-items: flex-end;
     margin: 0 15px;
+  }
+
+  .position-filter {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+
+  .checkboxes {
+    display: flex;
+    align-items: baseline;
+  }
+
+  .checkboxes-label {
+    font-weight: bold;
   }
 
   .players {

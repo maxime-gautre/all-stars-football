@@ -47,6 +47,7 @@ router
         const players = await getPlayers(playerContext)(
           searchParams.search,
           searchParams.sortBy,
+          searchParams.positions,
         );
         ctx.response.status = 200;
         ctx.response.body = players;

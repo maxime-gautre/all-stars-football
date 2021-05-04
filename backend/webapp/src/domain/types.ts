@@ -128,9 +128,21 @@ const sortsOptions = [
 ] as const;
 export type SortCriteria = typeof sortsOptions[number];
 
+const playerPositionOptions = [
+  "Goalkeeper",
+  "Defender",
+  "Midfielder",
+  "Attacker",
+] as const;
+export type PlayerPosition = typeof playerPositionOptions[number];
+
 export const searchPlayersValidator = v.object({
   search: v.string.optional(),
   sortBy: v.union(...sortsOptions).optional(),
+  positions: (v.string
+    .and((x) => v.Ok(x.split(","))) // handle multiple query params and transform into an array
+    .then(v.array(v.union(...playerPositionOptions)))) // then validate that each value is a part of the union
+    .optional(),
 });
 
 type NonEmptyArray<T> = [T, ...T[]];
