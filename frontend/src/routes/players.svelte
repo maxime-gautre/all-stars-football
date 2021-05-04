@@ -28,7 +28,7 @@
   let highlightStats = thirdStatsToDisplay('appearences');
 
   $: (async () => {
-    if (!sortBy && !currentSearchQuery) return;
+    if (!sortBy && currentSearchQuery === undefined) return;
     const searchParams = currentSearchQuery !== undefined ? { search: currentSearchQuery } : {};
     const sortByParams = sortBy ? { sortBy: sortBy } : {};
     const urlParams = new URLSearchParams({ ...searchParams, ...sortByParams });
