@@ -1,22 +1,25 @@
 <script lang="ts">
   import { TooltipDefinition, TooltipIcon } from 'carbon-components-svelte';
   import type { Player } from '../shared/types';
-  import type { ThirdStatsToDisplay } from '../utils/stats.ts';
   import VoteButton from './VoteButton.svelte';
   import { playerStore } from '../stores/playerStore';
+  import type { ThirdStatsToDisplay } from './playerHandler.ts';
+  import { shouldDisableVote } from './playerHandler.ts';
 
   export let player: Player;
   export let highlightStats: ThirdStatsToDisplay;
-  $: disableVote = $playerStore.length > 10;
-  $: hasVote = !!$playerStore.find((_) => _.id === player.id);
 
   const stats = player.total;
   const [parentPath, key] = highlightStats.path;
+
+  $: disableVote = shouldDisableVote($playerStore, player);
+  $: hasVote = !!$playerStore.find((_) => _.id === player.id);
 
   function handleVote() {
     playerStore.vote({
       id: player.id,
       name: player.personalInfo.name,
+      position: stats.games.position,
       photo: player.personalInfo.photo,
       teamLogo: stats.team.logo,
     });
