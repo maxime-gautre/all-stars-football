@@ -1,4 +1,5 @@
-import type { SortCriteria } from '$lib/shared/types';
+import type { SortCriteria, Player } from '$lib/shared/types';
+import type { SelectedPlayer } from '$lib/stores/playerStore';
 
 export type ThirdStatsToDisplay = {
   path: [string, string];
@@ -41,4 +42,20 @@ export function thirdStatsToDisplay(sortBy: SortCriteria): ThirdStatsToDisplay {
         abbr: 'GP',
       };
   }
+}
+
+export function shouldDisableVote(
+  selectedPlayers: SelectedPlayer[],
+  currentPlayer: Player
+): boolean {
+  const allPlayersSelected = selectedPlayers.length > 10;
+  const hasAlreadyOneGoalkeeperSelected =
+    currentPlayer.total.games.position === 'Goalkeeper' &&
+    selectedPlayers.some((_) => _.position === 'Goalkeeper');
+  const noGoalkeeperSelected =
+    currentPlayer.total.games.position !== 'Goalkeeper' &&
+    selectedPlayers.length === 10 &&
+    selectedPlayers.every((_) => _.position !== 'Goalkeeper');
+
+  return allPlayersSelected || hasAlreadyOneGoalkeeperSelected || noGoalkeeperSelected;
 }

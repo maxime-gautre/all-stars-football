@@ -17,17 +17,17 @@
   import { debounce } from '$lib/utils/debounce.ts';
   import { ChevronLeft20 } from 'carbon-icons-svelte';
   import type { Player } from '$lib/shared/types.ts';
-  import { SortByEnum, playerPositionOptions } from '$lib/shared/types.ts';
+  import { SortByEnum, sortedPlayerPositionOptions } from '$lib/shared/types.ts';
   import PlayerCard from '$lib/components/PlayerCard.svelte';
-  import { thirdStatsToDisplay } from '../lib/utils/stats.ts';
   import { get } from '$lib/utils/api.ts';
+  import { thirdStatsToDisplay } from '../lib/components/playerHandler.ts';
 
   export let players: Player[];
   let currentSearchQuery;
   let sortBy;
   let highlightStats = thirdStatsToDisplay('appearences');
 
-  const positionCheckboxes = playerPositionOptions.map((key) => ({
+  const positionCheckboxes = sortedPlayerPositionOptions.map((key) => ({
     position: key,
     checked: false,
   }));
