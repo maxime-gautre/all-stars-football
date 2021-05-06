@@ -25,6 +25,7 @@ function store() {
         );
       }),
     unVote: (playerId: number) => update((elements) => elements.filter((_) => _.id !== playerId)),
+    clear: () => update(() => []),
   };
 }
 
