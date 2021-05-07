@@ -1,9 +1,9 @@
 <script lang="ts">
-  import {Button, ButtonSet} from 'carbon-components-svelte';
-  import {Search20, SendFilled20} from 'carbon-icons-svelte';
-  import {playerStore} from '$lib/stores/playerStore';
+  import { Button, ButtonSet } from 'carbon-components-svelte';
+  import { Search20, SendFilled20 } from 'carbon-icons-svelte';
+  import { playerStore } from '$lib/stores/playerStore';
   import SelectedPlayerCard from '../lib/components/SelectedPlayerCard.svelte';
-  import JerseyIcon from "../lib/components/JerseyIcon.svelte";
+  import JerseyIcon from '../lib/components/JerseyIcon.svelte';
 
   const NumberOfPlayers = 11;
 </script>
@@ -24,8 +24,8 @@
                 onClose={() => playerStore.unVote($playerStore[i].id)}
               />
             {:else}
-              <JerseyIcon/>
-<!--              <Fa color="#FFF" icon={faTshirt} size="3x" />-->
+              <JerseyIcon />
+              <!--              <Fa color="#FFF" icon={faTshirt} size="3x" />-->
             {/if}
           </div>
         {/each}
