@@ -1,5 +1,6 @@
-import type { SortCriteria, Player } from '$lib/shared/types';
+import type { SortCriteria, Player, PlayerPosition } from '$lib/shared/types';
 import type { SelectedPlayer } from '$lib/stores/playerStore';
+import { get } from '$lib/utils/api';
 
 export type ThirdStatsToDisplay = {
   path: [string, string];
@@ -58,4 +59,23 @@ export function shouldDisableVote(
     selectedPlayers.every((_) => _.position !== 'Goalkeeper');
 
   return allPlayersSelected || hasAlreadyOneGoalkeeperSelected || noGoalkeeperSelected;
+}
+
+export async function searchPlayers(
+  positionCheckboxes: { position: PlayerPosition; checked: boolean }[],
+  currentSearchQuery: string | undefined,
+  sortBy: string | undefined
+): Promise<Player[]> {
+  const positionFilters: PlayerPosition[] = positionCheckboxes
+    .filter((_) => _.checked)
+    .map(({ position }) => position);
+
+  const searchParams = currentSearchQuery !== undefined ? { search: currentSearchQuery } : {};
+  const sortByParams = sortBy ? { sortBy: sortBy } : {};
+  const positionParams = positionFilters.length > 0 ? { positions: positionFilters } : {};
+  // @ts-ignore
+  const urlParams = new URLSearchParams({ ...searchParams, ...sortByParams, ...positionParams });
+  const response = await get(`search?${urlParams}`);
+  const results = await response.json();
+  return results;
 }
