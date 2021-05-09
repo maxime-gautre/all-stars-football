@@ -1,7 +1,6 @@
 import preprocess from 'svelte-preprocess';
-import nodeAdapter from '@sveltejs/adapter-node'
-import * as carbonPreprocess from 'carbon-components-svelte/preprocess/index.js'
-
+import nodeAdapter from '@sveltejs/adapter-node';
+import * as carbonPreprocess from 'carbon-components-svelte/preprocess/index.js';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
@@ -21,9 +20,9 @@ const config = {
     vite: {
       optimizeDeps: {
         include: ['carbon-components-svelte', 'clipboard-copy'],
-      }
+      },
     },
   },
 };
 
-export default config
+export default config;
