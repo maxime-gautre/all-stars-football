@@ -20,6 +20,13 @@
     if (response.status >= 400 && response.status < 500) {
       const responseError = await response.json();
       formError = responseError;
+      return;
+    }
+
+    if (response.status === 200) {
+      playerStore.clear();
+      window.location.href = '/';
+      return;
     }
   }
 </script>
