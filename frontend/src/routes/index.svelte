@@ -1,3 +1,6 @@
+<script context="module" lang="ts">
+  export const prerender = true;
+</script>
 <script lang="ts">
   import { Button, ButtonSet } from 'carbon-components-svelte';
   import { Search20, SendFilled20 } from 'carbon-icons-svelte';

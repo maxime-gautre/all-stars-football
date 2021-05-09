@@ -3,7 +3,7 @@
 bin
 
 # frontend
-frontend/.svelte
+frontend/.svelte-kit
 frontend/build
 
 **/node_modules/
