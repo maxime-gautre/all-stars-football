@@ -1,9 +1,9 @@
 <script lang="ts" context="module">
   import type { LoadOutput } from '@sveltejs/kit/types/page';
-  import { get as getFromContextModule } from '$lib/utils/api.ts';
+  import { get } from '$lib/utils/api.ts';
 
   export async function load(): Promise<LoadOutput> {
-    const response = await getFromContextModule('players');
+    const response = await get('players');
     return {
       props: {
         players: await response.json(),
@@ -13,16 +13,17 @@
 </script>
 
 <script lang="ts">
+  import { onMount } from 'svelte';
   import { Button, Checkbox, Search, Select, SelectItem } from 'carbon-components-svelte';
-  import { debounce } from '$lib/utils/debounce.ts';
   import { ChevronLeft20 } from 'carbon-icons-svelte';
+  import { debounce } from '$lib/utils/debounce.ts';
   import type { Player } from '$lib/shared/types.ts';
   import { SortByEnum, sortedPlayerPositionOptions } from '$lib/shared/types.ts';
+  import { thirdStatsToDisplay, searchPlayers } from '$lib/components/playerHandler.ts';
   import PlayerCard from '$lib/components/PlayerCard.svelte';
-  import { get } from '$lib/utils/api.ts';
-  import { thirdStatsToDisplay } from '../lib/components/playerHandler.ts';
 
   export let players: Player[];
+  let init = false;
   let currentSearchQuery;
   let sortBy;
   let highlightStats = thirdStatsToDisplay('appearences');
@@ -32,19 +33,13 @@
     checked: false,
   }));
 
-  $: (async () => {
-    const hasChecked = positionCheckboxes.every((_) => !_.checked);
-    if (!sortBy && currentSearchQuery === undefined && hasChecked) return;
-    const positionFilters = positionCheckboxes
-      .filter((_) => _.checked)
-      .map(({ position }) => position);
+  onMount(async () => {
+    init = true; // todo find something better to avoid trigger multiple search at init
+  });
 
-    const searchParams = currentSearchQuery !== undefined ? { search: currentSearchQuery } : {};
-    const sortByParams = sortBy ? { sortBy: sortBy } : {};
-    const positionParams = positionFilters.length > 0 ? { positions: positionFilters } : {};
-    const urlParams = new URLSearchParams({ ...searchParams, ...sortByParams, ...positionParams });
-    const response = await get(`search?${urlParams}`);
-    players = await response.json();
+  $: (async () => {
+    if (!init) return;
+    players = await searchPlayers(positionCheckboxes, currentSearchQuery, sortBy);
     highlightStats = thirdStatsToDisplay(sortBy);
   })();
 
