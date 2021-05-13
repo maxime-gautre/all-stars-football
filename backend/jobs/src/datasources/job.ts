@@ -10,6 +10,7 @@ export function initJob(): Promise<Job> {
     async (jobsCollection: Collection<JobCollection>) => {
       const newJob = {
         startDate: new Date(),
+        jobStatus: "RUNNING" as const,
       };
       // The return type of the insertOne method is broken it should Bson.ObjectId
       const doc =
@@ -31,7 +32,8 @@ export function completeJob(jobId: string): Promise<string> {
         },
         {
           $set: {
-            teamId: undefined,
+            teamId: null,
+            jobStatus: "COMPLETED",
             endDate: new Date(),
           },
         },
@@ -45,16 +47,18 @@ export function updateJobIdWithCurrentTeam(
   teamId: number,
 ): Promise<string> {
   return executeQuery("jobs", (jobsCollection: Collection<JobCollection>) => {
+    const updateDoc: Partial<Job> = {
+      teamId,
+      jobStatus: "SUSPENDED",
+      endDate: new Date(),
+    };
     return jobsCollection
       .updateOne(
         {
           _id: Bson.ObjectId.createFromHexString(jobId),
         },
         {
-          $set: {
-            teamId,
-            endDate: new Date(),
-          },
+          $set: updateDoc,
         },
       )
       .then(() => jobId);
@@ -65,12 +69,11 @@ export async function findLastJob(): Promise<Job | undefined> {
   const doc = await executeQuery(
     "jobs",
     (jobsCollection: Collection<JobCollection>) => {
+      const findDoc: Partial<Job> = {
+        jobStatus: "SUSPENDED",
+      };
       return jobsCollection.findOne(
-        {
-          endDate: {
-            $exists: true,
-          },
-        },
+        findDoc,
         {
           sort: {
             endDate: -1,
@@ -84,6 +87,7 @@ export async function findLastJob(): Promise<Job | undefined> {
     return {
       ...rest,
       id: _id.toHexString(),
+      teamId: rest.teamId ?? undefined, // transform null to undefined
     };
   }
 }

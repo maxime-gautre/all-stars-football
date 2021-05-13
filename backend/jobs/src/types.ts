@@ -1,9 +1,17 @@
 export type Job = {
   id: string;
   startDate: Date;
+  jobStatus: JobStatus;
   endDate?: Date;
   teamId?: number;
 };
+
+type JobStatus = "RUNNING" | "COMPLETED" | "SUSPENDED";
+
+export type Season = number & { __type: "season" };
+export function newSeason(season: number): Season {
+  return season as Season;
+}
 
 type PlayerInfo = {
   id: number;

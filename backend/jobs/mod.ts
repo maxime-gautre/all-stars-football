@@ -1,6 +1,9 @@
 import { log } from "../deps.ts";
 import { Context, populatePlayers } from "./src/populatePlayers.ts";
-import { fetchPlayers, savePlayers } from "./src/datasources/player.ts";
+import {
+  fetchPlayers,
+  saveFootballApiPlayers,
+} from "./src/datasources/player.ts";
 import {
   completeJob,
   findLastJob,
@@ -8,8 +11,10 @@ import {
   updateJobIdWithCurrentTeam,
 } from "./src/datasources/job.ts";
 import { fetchTeams, getTeamsIds, saveTeams } from "./src/datasources/team.ts";
+import { newSeason } from "./src/types.ts";
 
 const context: Context = {
+  season: newSeason(2020),
   jobApi: {
     initJob,
     findLastJob,
@@ -23,7 +28,7 @@ const context: Context = {
   },
   playerApi: {
     fetchPlayers,
-    savePlayers,
+    saveFootballApiPlayers,
   },
   options: {
     mode: "incremental",
