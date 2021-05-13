@@ -25,7 +25,7 @@ export async function transformPlayersJob(context: Context) {
   const { season, playersApi, logger } = context;
   const batch = 50;
   logger.info("Starts transforming players...");
-  logger.info(`batch=${batch}`)
+  logger.info(`batch=${batch}`);
   async function transformJobRec(offset = 0): Promise<void> {
     const players = await playersApi.readFootballApiPlayers(
       season,

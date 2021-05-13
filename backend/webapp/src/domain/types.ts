@@ -4,7 +4,7 @@ export type Season = number & { __type: "season" };
 export function newSeason(season: number): Season {
   return season as Season;
 }
-export const DefaultSeason = newSeason(2020)
+export const DefaultSeason = newSeason(2020);
 
 export type Player = {
   id: number;

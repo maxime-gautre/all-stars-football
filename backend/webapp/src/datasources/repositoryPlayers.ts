@@ -1,8 +1,13 @@
 import { Collection } from "../../../deps.ts";
-import {Player, PlayerPosition, SortCriteria, DefaultSeason} from "../domain/types.ts";
+import {
+  DefaultSeason,
+  Player,
+  PlayerPosition,
+  SortCriteria,
+} from "../domain/types.ts";
 import { executeQuery } from "../../../shared/mongoUtils.ts";
 
-const playersCollection = `players_${DefaultSeason}`
+const playersCollection = `players_${DefaultSeason}`;
 
 export function listPlayers(
   sortBy: SortCriteria,
