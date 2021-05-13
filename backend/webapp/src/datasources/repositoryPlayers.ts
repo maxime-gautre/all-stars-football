@@ -1,6 +1,55 @@
 import { Collection } from "../../../deps.ts";
-import { Player, PlayerPosition, SortCriteria } from "../domain/types.ts";
+import {Player, PlayerPosition, SortCriteria, DefaultSeason} from "../domain/types.ts";
 import { executeQuery } from "../../../shared/mongoUtils.ts";
+
+const playersCollection = `players_${DefaultSeason}`
+
+export function listPlayers(
+  sortBy: SortCriteria,
+  positions: PlayerPosition[],
+  limit: number,
+  offset: number,
+): Promise<Player[]> {
+  const sortDoc = sortDocument(sortBy);
+  const findDoc = positions.length === 0
+    ? {}
+    : { "total.games.position": { $in: positions } };
+  return executeQuery(playersCollection, (collection: Collection<Player>) => {
+    return collection.find(findDoc, { sort: sortDoc }).skip(
+      offset,
+    ).limit(limit).toArray();
+  });
+}
+
+export function searchPlayers(
+  searchQuery: string,
+  sortBy: SortCriteria,
+  positions: PlayerPosition[],
+  limit: number,
+  offset: number,
+): Promise<Player[]> {
+  const sortDoc = sortDocument(sortBy);
+  const findDoc = positions.length === 0
+    ? {}
+    : { "total.games.position": { $in: positions } };
+  return executeQuery(playersCollection, (collection: Collection<Player>) => {
+    return collection.find({
+      ...findDoc,
+      $text: {
+        $search: searchQuery,
+      },
+    }, {
+      projection: {
+        score: { $meta: "textScore" },
+      },
+    }).sort(
+      {
+        score: { $meta: "textScore" },
+        ...sortDoc,
+      },
+    ).skip(offset).limit(limit).toArray();
+  });
+}
 
 function mappingSort(sortBy: SortCriteria): string {
   switch (sortBy) {
@@ -31,61 +80,14 @@ function sortDocument(sortBy: SortCriteria) {
     };
 }
 
-export function listPlayers(
-  sortBy: SortCriteria,
-  positions: PlayerPosition[],
-  limit: number,
-  offset: number,
-): Promise<Player[]> {
-  const sortDoc = sortDocument(sortBy);
-  const findDoc = positions.length === 0
-    ? {}
-    : { "total.games.position": { $in: positions } };
-  return executeQuery("players", (collection: Collection<Player>) => {
-    return collection.find(findDoc, { sort: sortDoc }).skip(
-      offset,
-    ).limit(limit).toArray();
-  });
-}
-
-export function searchPlayers(
-  searchQuery: string,
-  sortBy: SortCriteria,
-  positions: PlayerPosition[],
-  limit: number,
-  offset: number,
-): Promise<Player[]> {
-  const sortDoc = sortDocument(sortBy);
-  const findDoc = positions.length === 0
-    ? {}
-    : { "total.games.position": { $in: positions } };
-  return executeQuery("players", (collection: Collection<Player>) => {
-    return collection.find({
-      ...findDoc,
-      $text: {
-        $search: searchQuery,
-      },
-    }, {
-      projection: {
-        score: { $meta: "textScore" },
-      },
-    }).sort(
-      {
-        score: { $meta: "textScore" },
-        ...sortDoc,
-      },
-    ).skip(offset).limit(limit).toArray();
-  });
-}
-
 export function listPlayersById(playerIds: number[]): Promise<Player[]> {
-  return executeQuery("players", (collection: Collection<Player>) => {
+  return executeQuery(playersCollection, (collection: Collection<Player>) => {
     return collection.find({ id: { $in: playerIds } }).toArray();
   });
 }
 
 export function updatePlayersVoteCount(playerIds: number[]) {
-  return executeQuery("players", (collection: Collection<Player>) => {
+  return executeQuery(playersCollection, (collection: Collection<Player>) => {
     return collection.updateMany({ id: { $in: playerIds } }, {
       $inc: {
         vote: 1,
