@@ -1,21 +1,14 @@
-import { log } from "../deps.ts";
-import { Context, populatePlayers } from "./src/footballApi/populatePlayers.ts";
-import {
-  fetchPlayers,
-  saveFootballApiPlayers,
-} from "./src/footballApi/datasources/player.ts";
+import { Context, populatePlayers } from "./populatePlayers.ts";
+import { newSeason } from "../types.ts";
 import {
   completeJob,
   findLastJob,
   initJob,
   updateJobIdWithCurrentTeam,
-} from "./src/footballApi/datasources/job.ts";
-import {
-  fetchTeams,
-  getTeamsIds,
-  saveTeams,
-} from "./src/footballApi/datasources/team.ts";
-import { newSeason } from "./src/types.ts";
+} from "./datasources/job.ts";
+import { fetchTeams, getTeamsIds, saveTeams } from "./datasources/team.ts";
+import { fetchPlayers, saveFootballApiPlayers } from "./datasources/player.ts";
+import { loggerContext } from "../logger.ts";
 
 const context: Context = {
   season: newSeason(2020),
@@ -38,7 +31,7 @@ const context: Context = {
     mode: "incremental",
     throttle: 20,
   },
-  logger: log.getLogger(),
+  ...loggerContext,
 };
 
 void populatePlayers(context);

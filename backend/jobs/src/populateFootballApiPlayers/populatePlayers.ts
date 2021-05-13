@@ -1,12 +1,12 @@
-import { log } from "../../../deps.ts";
 import { timer } from "../../../shared/time.ts";
 import { FootballApiPlayer, FootballApiTeam, Job, Season } from "../types.ts";
 import {
   FootballApiResponse,
   RateLimitError,
 } from "./utils/apifootball/types.ts";
+import { LoggerContext } from "../logger.ts";
 
-export type Context = {
+export type Context = LoggerContext & {
   season: Season;
   jobApi: {
     initJob: () => Promise<Job>;
@@ -39,26 +39,7 @@ export type Context = {
     mode: "full-refresh" | "incremental";
     throttle?: number;
   };
-  logger: log.Logger;
 };
-
-await log.setup({
-  handlers: {
-    console: new log.handlers.ConsoleHandler("DEBUG"),
-  },
-
-  loggers: {
-    default: {
-      level: "INFO",
-      handlers: ["console"],
-    },
-
-    tests: {
-      level: "CRITICAL",
-      handlers: ["console"],
-    },
-  },
-});
 
 export async function populatePlayers(context: Context): Promise<void> {
   const { season, jobApi, playerApi, options, logger } = context;
