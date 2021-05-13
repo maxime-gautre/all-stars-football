@@ -1,5 +1,5 @@
-import { faker } from "../../../dev_deps.ts";
-import { FootballApiPlayer, FootballApiTeam, Job, Player } from "../types.ts";
+import { faker } from "../../../../dev_deps.ts";
+import { FootballApiPlayer, FootballApiTeam, Job } from "../../types.ts";
 import { FootballApiResponse } from "../utils/apifootball/types.ts";
 
 export class InMemoryJobStore {
@@ -13,6 +13,7 @@ export class InMemoryJobStore {
   initJob(): Promise<Job> {
     const job = {
       id: faker.random.uuid(),
+      jobStatus: "RUNNING" as const,
       startDate: new Date(),
     };
     this.jobStore.set(job.id, job);
@@ -31,6 +32,7 @@ export class InMemoryJobStore {
     if (maybeJob) {
       this.jobStore.set(jobId, {
         ...maybeJob,
+        jobStatus: "SUSPENDED",
         teamId: teamId,
       });
     }
@@ -42,6 +44,7 @@ export class InMemoryJobStore {
     if (maybeJob) {
       this.jobStore.set(jobId, {
         ...maybeJob,
+        jobStatus: "COMPLETED",
         endDate: new Date(),
       });
     }
@@ -68,21 +71,17 @@ export class InMemoryTeamsStore {
 }
 
 export class InMemoryPlayerStore {
-  private readonly playerStore: Player[] = [];
+  private readonly playerStore: FootballApiPlayer[] = [];
 
-  savePlayers(players: Player[]): Promise<void> {
+  savePlayers(players: FootballApiPlayer[]): Promise<void> {
     players.forEach((el) => {
       this.playerStore.push(el);
     });
     return Promise.resolve();
   }
 
-  listPlayers(): Player[] {
+  listPlayers(): FootballApiPlayer[] {
     return this.playerStore;
-  }
-
-  getPlayer(id: number): Player | undefined {
-    return this.playerStore.find((_) => _.id === id);
   }
 }
 
@@ -1601,6 +1600,7 @@ export const manUtdPlayers = {
 };
 
 export const fakeFetchPlayers = (
+  _season: number,
   teamId: number,
 ): Promise<FootballApiResponse<FootballApiPlayer>> => {
   const cityTeamId = 50;

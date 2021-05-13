@@ -1,5 +1,5 @@
-import { axiod } from "../../../../deps.ts";
-import { getEnvVariable } from "../../../../shared/envVariable.ts";
+import { axiod } from "../../../../../deps.ts";
+import { getEnvVariable } from "../../../../../shared/envVariable.ts";
 import { ApiError, FootballApiResponse, RateLimitError } from "./types.ts";
 
 const ApiSportsKey = getEnvVariable("APISPORTS_KEY");
@@ -8,17 +8,13 @@ export async function fetchData<T>(
   path: string,
   params: { [key: string]: string | number | boolean },
 ): Promise<FootballApiResponse<T>> {
-  const season = 2020;
   const config = {
     url: `https://v3.football.api-sports.io/${path}`,
     method: "get" as const,
     headers: {
       "x-apisports-key": ApiSportsKey,
     },
-    params: {
-      ...params,
-      season,
-    },
+    params,
   };
   const res = await axiod.request(config);
   const data = (res.data as unknown) as FootballApiResponse<T>;
