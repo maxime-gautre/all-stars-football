@@ -1,6 +1,6 @@
-import { log } from "../../deps.ts";
-import { timer } from "../../shared/time.ts";
-import { FootballApiPlayer, FootballApiTeam, Job, Season } from "./types.ts";
+import { log } from "../../../deps.ts";
+import { timer } from "../../../shared/time.ts";
+import { FootballApiPlayer, FootballApiTeam, Job, Season } from "../types.ts";
 import {
   FootballApiResponse,
   RateLimitError,

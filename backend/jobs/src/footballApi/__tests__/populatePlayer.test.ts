@@ -1,5 +1,5 @@
-import { log } from "../../../deps.ts";
-import { faker, Rhum } from "../../../dev_deps.ts";
+import { log } from "../../../../deps.ts";
+import { faker, Rhum } from "../../../../dev_deps.ts";
 import { Context, populatePlayers } from "../populatePlayers.ts";
 import {
   cityPlayers,
@@ -16,7 +16,7 @@ import {
   Job,
   newSeason,
   Season,
-} from "../types.ts";
+} from "../../types.ts";
 import {
   FootballApiResponse,
   RateLimitError,

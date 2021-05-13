@@ -1,6 +1,6 @@
-import { FootballApiPlayer, Season } from "../types.ts";
+import { FootballApiPlayer, Season } from "../../types.ts";
 import { FootballApiResponse } from "../utils/apifootball/types.ts";
-import { bulkUpsert } from "../../../shared/mongoUtils.ts";
+import { bulkUpsert } from "../../../../shared/mongoUtils.ts";
 import { fetchData } from "../utils/apifootball/apiFootball.ts";
 
 export function fetchPlayers(
@@ -27,4 +27,3 @@ export function saveFootballApiPlayers(
   });
   return bulkUpsert(`players_football_api_${season}`, docs);
 }
-

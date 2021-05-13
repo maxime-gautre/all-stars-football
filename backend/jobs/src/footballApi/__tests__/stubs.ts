@@ -1,5 +1,5 @@
-import { faker } from "../../../dev_deps.ts";
-import { FootballApiPlayer, FootballApiTeam, Job } from "../types.ts";
+import { faker } from "../../../../dev_deps.ts";
+import { FootballApiPlayer, FootballApiTeam, Job } from "../../types.ts";
 import { FootballApiResponse } from "../utils/apifootball/types.ts";
 
 export class InMemoryJobStore {

@@ -1,5 +1,5 @@
-import { axiod } from "../../../../deps.ts";
-import { getEnvVariable } from "../../../../shared/envVariable.ts";
+import { axiod } from "../../../../../deps.ts";
+import { getEnvVariable } from "../../../../../shared/envVariable.ts";
 import { ApiError, FootballApiResponse, RateLimitError } from "./types.ts";
 
 const ApiSportsKey = getEnvVariable("APISPORTS_KEY");
