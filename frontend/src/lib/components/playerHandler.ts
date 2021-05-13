@@ -73,8 +73,12 @@ export async function searchPlayers(
   const searchParams = currentSearchQuery !== undefined ? { search: currentSearchQuery } : {};
   const sortByParams = sortBy ? { sortBy: sortBy } : {};
   const positionParams = positionFilters.length > 0 ? { positions: positionFilters } : {};
-  // @ts-ignore
-  const urlParams = new URLSearchParams({ ...searchParams, ...sortByParams, ...positionParams });
+  const params = ({
+    ...searchParams,
+    ...sortByParams,
+    ...positionParams,
+  } as unknown) as URLSearchParams;
+  const urlParams = new URLSearchParams(params);
   const response = await get(`search?${urlParams}`);
   const results = await response.json();
   return results;

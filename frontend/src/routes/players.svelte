@@ -38,7 +38,7 @@
   });
 
   $: (async () => {
-    if (!init) return
+    if (!init) return;
     players = await searchPlayers(positionCheckboxes, currentSearchQuery, sortBy);
     highlightStats = thirdStatsToDisplay(sortBy);
   })();
